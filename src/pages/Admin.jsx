@@ -1,0 +1,87 @@
+import React from 'react';
+import { Routes, Route, NavLink } from 'react-router-dom';
+import {
+  Users, Package, Tag, MessageSquare, BarChart2, Download,
+  TrendingUp, FileSpreadsheet, Layers, Bookmark, Image as ImageIcon
+} from 'lucide-react';
+import { motion } from 'framer-motion';
+
+// Modular Sub-pages
+import DashboardHome    from './admin/DashboardHome';
+import CatalogManager   from './admin/CatalogManager';
+import ProductsManager  from './admin/ProductsManager';
+import TagsManager      from './admin/TagsManager';
+import DealerQueue      from './admin/DealerQueue';
+import InquiryCRM       from './admin/InquiryCRM';
+import CampaignManager  from './admin/CampaignManager';
+import BulkMarkup       from './admin/BulkMarkup';
+import DataExport       from './admin/DataExport';
+import AssetAuditor     from './admin/AssetAuditor';
+import BrandManager     from './admin/BrandManager';
+import BrandingManager  from './admin/BrandingManager';
+
+import './Admin.css';
+
+const ADMIN_LINKS = [
+  { to: '/admin',          icon: BarChart2,        label: 'Overview' },
+  { to: '/admin/catalog',  icon: FileSpreadsheet,  label: 'Catalog' },
+  { to: '/admin/products', icon: Layers,           label: 'Products' },
+  { to: '/admin/tags',     icon: Tag,              label: 'Search Tags' },
+  { to: '/admin/brands',   icon: Bookmark,         label: 'Brands' },
+  { to: '/admin/auditor',  icon: Package,          label: 'Asset Audit' },
+  { to: '/admin/dealers',  icon: Users,            label: 'Dealers' },
+  { to: '/admin/inquiries',icon: MessageSquare,    label: 'Inquiries' },
+  { to: '/admin/campaigns',icon: Tag,              label: 'Campaigns' },
+  { to: '/admin/markup',   icon: TrendingUp,       label: 'Bulk Markup' },
+  { to: '/admin/branding', icon: ImageIcon,        label: 'Branding' },
+  { to: '/admin/export',   icon: Download,         label: 'Export' },
+];
+
+export default function Admin() {
+  return (
+    <div className="admin-root">
+      <aside className="admin-sidebar">
+        <div className="admin-sidebar-header">
+          <p className="admin-sidebar-title">Admin Dashboard</p>
+          <span className="admin-sidebar-v">v3.0-modular</span>
+        </div>
+        
+        <nav className="admin-nav">
+          {ADMIN_LINKS.map(({ to, icon: Icon, label }) => (
+            <NavLink
+              key={to}
+              to={to}
+              end={to === ''}
+              className={({ isActive }) => `admin-nav-link ${isActive ? 'active' : ''}`}
+            >
+              <Icon size={18} /> <span>{label}</span>
+            </NavLink>
+          ))}
+        </nav>
+      </aside>
+
+      <main className="admin-content">
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <Routes>
+            <Route index             element={<DashboardHome />} />
+            <Route path="catalog"   element={<CatalogManager />} />
+            <Route path="products"  element={<ProductsManager />} />
+            <Route path="tags"      element={<TagsManager />} />
+            <Route path="brands"    element={<BrandManager />} />
+            <Route path="auditor"   element={<AssetAuditor />} />
+            <Route path="dealers"   element={<DealerQueue />} />
+            <Route path="inquiries" element={<InquiryCRM />} />
+            <Route path="campaigns" element={<CampaignManager />} />
+            <Route path="markup"    element={<BulkMarkup />} />
+            <Route path="branding"  element={<BrandingManager />} />
+            <Route path="export"    element={<DataExport />} />
+          </Routes>
+        </motion.div>
+      </main>
+    </div>
+  );
+}

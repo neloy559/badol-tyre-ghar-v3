@@ -1,0 +1,11 @@
+sku,name,size,pattern,ply,designModel,retailPrice,wholesalePrice,stock
+BTG-001,Zess Flap,10.00-20,Standard,N/A,Local,400,350,150
+BTG-005,Advance E3/L3,17.5-25,E3/L3,20PR,GLR05,65000,60000,12
+BTG-006,Advance E3/L3,20.5-25,E3/L3,24PR,GLR05,85000,80000,8
+BTG-008,Tourador X Speed TU1,205/55R16,Passenger,4PR,X Speed,6500,5800,40
+BTG-012,Giti Control 288,225/50R17,Performance,4PR,Control 288,9500,8500,24
+BTG-015,MRF Super Lug,7.50-16,Lug,16PR,Super Lug 50,12500,11000,100
+BTG-018,CEAT Buland,8.25-16,Rib,16PR,Mile XL,15000,14000,80
+BTG-025,Maxxis Bighorn M/T,265/70R17,Mud Terrain,8PR,MT-762,22000,19500,16
+BTG-031,Hankook Dynapro AT2,245/70R16,All Terrain,6PR,RF11,14000,12500,32
+BTG-045,Linglong CrossWind AT,215/75R15,All Terrain,6PR,CrossWind,7500,6800,60

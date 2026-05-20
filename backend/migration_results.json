@@ -1,0 +1,512 @@
+[
+  {
+    "sku": "BTG-001",
+    "oldUrl": "https://i.ibb.co/4nXb3D8n/10-00-20-1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778738993/btg_v3_products/BTG-001_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-002",
+    "oldUrl": "https://i.ibb.co/4nXb3D8n/10-00-20-1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778738997/btg_v3_products/BTG-002_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-003",
+    "oldUrl": "https://i.ibb.co/4nXb3D8n/10-00-20-1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739000/btg_v3_products/BTG-003_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-004",
+    "oldUrl": "https://i.ibb.co/JjJJYK0y/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739002/btg_v3_products/BTG-004_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-005",
+    "oldUrl": "https://i.ibb.co/JR787JRT/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739004/btg_v3_products/BTG-005_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-006",
+    "oldUrl": "https://i.ibb.co/KpJBdXF7/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739006/btg_v3_products/BTG-006_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-007",
+    "oldUrl": "https://i.ibb.co/4nXb3D8n/10-00-20-1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739008/btg_v3_products/BTG-007_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-008",
+    "oldUrl": "https://i.ibb.co/DDqSj8WM/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739010/btg_v3_products/BTG-008_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-009",
+    "oldUrl": "https://i.ibb.co/4nXb3D8n/10-00-20-1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739012/btg_v3_products/BTG-009_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-010",
+    "oldUrl": "https://i.ibb.co/GQ41R4vn/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739014/btg_v3_products/BTG-010_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-011",
+    "oldUrl": "https://i.ibb.co/KpJBdXF7/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739016/btg_v3_products/BTG-011_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-012",
+    "oldUrl": "https://i.ibb.co/j9CsrWQZ/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739018/btg_v3_products/BTG-012_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-013",
+    "oldUrl": "https://i.ibb.co/4nXb3D8n/10-00-20-1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739019/btg_v3_products/BTG-013_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-014",
+    "oldUrl": "https://i.ibb.co/jP2Yfpm4/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739022/btg_v3_products/BTG-014_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-015",
+    "oldUrl": "https://i.ibb.co/4ZWYFDft/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739024/btg_v3_products/BTG-015_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-016",
+    "oldUrl": "https://i.ibb.co/3Ym1B2Jz/2.png",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739028/btg_v3_products/BTG-016_main.png",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-017",
+    "oldUrl": "https://i.ibb.co/fY0s8Y10/1.jpg",
+    "error": "Request failed with status code 404",
+    "status": "fail"
+  },
+  {
+    "sku": "BTG-018",
+    "oldUrl": "https://i.ibb.co/4nXb3D8n/10-00-20-1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739031/btg_v3_products/BTG-018_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-019",
+    "oldUrl": "https://i.ibb.co/4nXb3D8n/10-00-20-1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739034/btg_v3_products/BTG-019_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-020",
+    "oldUrl": "https://i.ibb.co/4nXb3D8n/10-00-20-1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739036/btg_v3_products/BTG-020_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-021",
+    "oldUrl": "https://i.ibb.co/m5fT6KJ3/11.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739039/btg_v3_products/BTG-021_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-022",
+    "oldUrl": "https://i.ibb.co/h1VVXTrD/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739041/btg_v3_products/BTG-022_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-023",
+    "oldUrl": "https://i.ibb.co/LzrWQf7P/1.png",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739044/btg_v3_products/BTG-023_main.png",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-024",
+    "oldUrl": "https://i.ibb.co/rBpRFQm/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739047/btg_v3_products/BTG-024_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-025",
+    "oldUrl": "https://i.ibb.co/whTphkV4/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739049/btg_v3_products/BTG-025_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-026",
+    "oldUrl": "https://i.ibb.co/4RNF2LJJ/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739051/btg_v3_products/BTG-026_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-027",
+    "oldUrl": "https://i.ibb.co/Kx3BKYY5/1.jpg",
+    "error": "Request failed with status code 404",
+    "status": "fail"
+  },
+  {
+    "sku": "BTG-028",
+    "oldUrl": "https://i.ibb.co/4nXb3D8n/10-00-20-1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739055/btg_v3_products/BTG-028_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-029",
+    "oldUrl": "https://i.ibb.co/4nXb3D8n/10-00-20-1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739057/btg_v3_products/BTG-029_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-030",
+    "oldUrl": "https://i.ibb.co/4nXb3D8n/10-00-20-1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739059/btg_v3_products/BTG-030_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-031",
+    "oldUrl": "https://i.ibb.co/4nXb3D8n/10-00-20-1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739062/btg_v3_products/BTG-031_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-032",
+    "oldUrl": "https://i.ibb.co/Lhb9BzQr/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739064/btg_v3_products/BTG-032_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-033",
+    "oldUrl": "https://i.ibb.co/39wtBs7D/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739066/btg_v3_products/BTG-033_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-034",
+    "oldUrl": "https://i.ibb.co/TB1CTh70/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739068/btg_v3_products/BTG-034_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-035",
+    "oldUrl": "https://i.ibb.co/pjPv4dRG/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739070/btg_v3_products/BTG-035_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-036",
+    "oldUrl": "https://i.ibb.co/4nXb3D8n/10-00-20-1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739072/btg_v3_products/BTG-036_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-037",
+    "oldUrl": "https://i.ibb.co/Ld88qw0J/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739074/btg_v3_products/BTG-037_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-038",
+    "oldUrl": "https://i.ibb.co/4nXb3D8n/10-00-20-1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739076/btg_v3_products/BTG-038_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-039",
+    "oldUrl": "https://i.ibb.co/4nXb3D8n/10-00-20-1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739078/btg_v3_products/BTG-039_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-040",
+    "oldUrl": "https://i.ibb.co/FkB87wm5/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739081/btg_v3_products/BTG-040_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-041",
+    "oldUrl": "https://i.ibb.co/d4JY0DFP/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739083/btg_v3_products/BTG-041_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-042",
+    "oldUrl": "https://i.ibb.co/prKJ8wxT/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739085/btg_v3_products/BTG-042_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-043",
+    "oldUrl": "https://i.ibb.co/NdDTM10p/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739088/btg_v3_products/BTG-043_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-044",
+    "oldUrl": "https://i.ibb.co/Z1p15vTS/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739091/btg_v3_products/BTG-044_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-045",
+    "oldUrl": "https://i.ibb.co/JwQDbz8p/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739094/btg_v3_products/BTG-045_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-046",
+    "oldUrl": "https://i.ibb.co/214PpjNt/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739096/btg_v3_products/BTG-046_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-047",
+    "oldUrl": "https://i.ibb.co/Zp2XKR2P/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739098/btg_v3_products/BTG-047_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-048",
+    "oldUrl": "https://i.ibb.co/wZSMMybM/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739100/btg_v3_products/BTG-048_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-049",
+    "oldUrl": "https://i.ibb.co/PGwKgTKm/2.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739103/btg_v3_products/BTG-049_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-050",
+    "oldUrl": "https://i.ibb.co/gbpxmLPY/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739105/btg_v3_products/BTG-050_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-051",
+    "oldUrl": "https://i.ibb.co/Lz7wJVZW/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739108/btg_v3_products/BTG-051_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-052",
+    "oldUrl": "https://i.ibb.co/gbCrRzQv/2.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739111/btg_v3_products/BTG-052_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-053",
+    "oldUrl": "https://i.ibb.co/WpgtxSR9/2.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739113/btg_v3_products/BTG-053_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-054",
+    "oldUrl": "https://i.ibb.co/4nXb3D8n/10-00-20-1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739116/btg_v3_products/BTG-054_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-055",
+    "oldUrl": "https://i.ibb.co/wZ0NxP8f/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739118/btg_v3_products/BTG-055_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-056",
+    "oldUrl": "https://i.ibb.co/sZZB07b/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739120/btg_v3_products/BTG-056_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-057",
+    "oldUrl": "https://i.ibb.co/4nXb3D8n/10-00-20-1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739122/btg_v3_products/BTG-057_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-058",
+    "oldUrl": "https://i.ibb.co/4nXb3D8n/10-00-20-1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739124/btg_v3_products/BTG-058_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-059",
+    "oldUrl": "https://i.ibb.co/4nXb3D8n/10-00-20-1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739127/btg_v3_products/BTG-059_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-060",
+    "oldUrl": "https://i.ibb.co/4nXb3D8n/10-00-20-1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739130/btg_v3_products/BTG-060_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-061",
+    "oldUrl": "https://i.ibb.co/q3d02v7G/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739132/btg_v3_products/BTG-061_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-062",
+    "oldUrl": "https://i.ibb.co/4nXb3D8n/10-00-20-1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739134/btg_v3_products/BTG-062_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-063",
+    "oldUrl": "https://i.ibb.co/wNKpZbS6/2.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739136/btg_v3_products/BTG-063_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-064",
+    "oldUrl": "https://i.ibb.co/QFK4MW7w/2.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739138/btg_v3_products/BTG-064_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-065",
+    "oldUrl": "https://i.ibb.co/vCk9Pbqd/2.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739140/btg_v3_products/BTG-065_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-066",
+    "oldUrl": "https://i.ibb.co/4nXb3D8n/10-00-20-1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739143/btg_v3_products/BTG-066_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-067",
+    "oldUrl": "https://i.ibb.co/tNFSMQP/3.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739145/btg_v3_products/BTG-067_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-068",
+    "oldUrl": "https://i.ibb.co/yn839Dr5/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739147/btg_v3_products/BTG-068_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-069",
+    "oldUrl": "https://i.ibb.co/4nXb3D8n/10-00-20-1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739149/btg_v3_products/BTG-069_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-070",
+    "oldUrl": "https://i.ibb.co/4nXb3D8n/10-00-20-1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739151/btg_v3_products/BTG-070_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-071",
+    "oldUrl": "https://i.ibb.co/YF5tGTsc/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739153/btg_v3_products/BTG-071_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-072",
+    "oldUrl": "https://i.ibb.co/M5CD01gh/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739157/btg_v3_products/BTG-072_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-073",
+    "oldUrl": "https://i.ibb.co/PzVyXN4P/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739159/btg_v3_products/BTG-073_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-074",
+    "oldUrl": "https://i.ibb.co/yFnBb9Nq/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739161/btg_v3_products/BTG-074_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-075",
+    "oldUrl": "https://i.ibb.co/1t0HFJXg/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739163/btg_v3_products/BTG-075_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-076",
+    "oldUrl": "https://i.ibb.co/qMLC0wd4/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739165/btg_v3_products/BTG-076_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-077",
+    "oldUrl": "https://i.ibb.co/Wvqjg3SZ/1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739167/btg_v3_products/BTG-077_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-078",
+    "oldUrl": "https://i.ibb.co/4nXb3D8n/10-00-20-1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739178/btg_v3_products/BTG-078_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-079",
+    "oldUrl": "https://i.ibb.co/qFWwP64S/2.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739186/btg_v3_products/BTG-079_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-080",
+    "oldUrl": "https://i.ibb.co/4nXb3D8n/10-00-20-1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739192/btg_v3_products/BTG-080_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-081",
+    "oldUrl": "https://i.ibb.co/4nXb3D8n/10-00-20-1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739196/btg_v3_products/BTG-081_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-082",
+    "oldUrl": "https://i.ibb.co/4nXb3D8n/10-00-20-1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739200/btg_v3_products/BTG-082_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-083",
+    "oldUrl": "https://i.ibb.co/4nXb3D8n/10-00-20-1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739205/btg_v3_products/BTG-083_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-084",
+    "oldUrl": "https://i.ibb.co/4nXb3D8n/10-00-20-1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739209/btg_v3_products/BTG-084_main.jpg",
+    "status": "success"
+  },
+  {
+    "sku": "BTG-085",
+    "oldUrl": "https://i.ibb.co/4nXb3D8n/10-00-20-1.jpg",
+    "newUrl": "https://res.cloudinary.com/dwheha9pb/image/upload/v1778739213/btg_v3_products/BTG-085_main.jpg",
+    "status": "success"
+  }
+]

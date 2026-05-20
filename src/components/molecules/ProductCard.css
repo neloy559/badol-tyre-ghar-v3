@@ -1,0 +1,278 @@
+/* Premium Product Card Styles */
+
+.btg-pcard {
+  background: var(--color-bg-base);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: all var(--transition-normal);
+  height: 100%;
+}
+
+.btg-pcard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--color-brand-light);
+}
+
+/* Top Actions (Badge & Wishlist) */
+.btg-pcard__top-actions {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.btg-pcard__badge {
+  background: var(--color-brand);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  pointer-events: auto;
+  box-shadow: var(--shadow-sm);
+}
+
+.btg-pcard__wishlist {
+  width: 34px;
+  height: 34px;
+  background: #fff;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.btg-pcard__wishlist:hover {
+  background: var(--color-bg-hover);
+  color: var(--color-brand);
+  border-color: var(--color-brand-light);
+  transform: scale(1.1);
+}
+
+/* Image Container */
+.btg-pcard__image-link {
+  display: block;
+  width: 100%;
+  background: var(--color-bg-elevated);
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+}
+
+.btg-pcard__image-wrap {
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Blur-up container */
+.btg-pcard__blur-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* The tiny blurred placeholder */
+.btg-pcard__img-blur {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: blur(12px);
+  transform: scale(1.05);
+  transition: opacity 0.3s ease;
+}
+
+/* Full-res image: starts invisible, fades in on load */
+.btg-pcard__img-full {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btg-pcard__img-full.loaded {
+  opacity: 1;
+}
+
+.btg-pcard:hover .btg-pcard__img-full {
+  transform: scale(1.08);
+}
+
+.btg-pcard__placeholder {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--color-text-muted);
+  opacity: 0.2;
+}
+
+/* Content Area */
+.btg-pcard__content {
+  padding: 10px 12px; /* Tightened */
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 4px; /* Tightened */
+}
+
+.btg-pcard__meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btg-pcard__category {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-brand);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.btg-pcard__stock {
+  font-size: 10px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btg-pcard__stock.in-stock { color: #16a34a; }
+.btg-pcard__stock.out-of-stock { color: #dc2626; }
+
+.btg-pcard__name-link {
+  text-decoration: none;
+}
+
+.btg-pcard__name {
+  font-size: 13.5px; /* Slightly smaller */
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+  line-height: 1.3;
+  max-height: 2.6em; /* Reduced from 2.8 */
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* Spec Matrix */
+.btg-pcard__specs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0; /* Removed vertical padding */
+}
+
+.btg-pcard__spec-item {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  display: flex;
+  gap: 4px;
+}
+
+.btg-pcard__spec-item strong {
+  color: var(--color-text-primary);
+  font-weight: 700;
+}
+
+/* Footer / Action Area */
+.btg-pcard__footer {
+  margin-top: 4px; /* Reduced */
+  padding-top: 6px; /* Reduced */
+  border-top: 1px dashed var(--color-border); /* Subtle divider */
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Reduced */
+}
+
+.btg-pcard__pricing {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.btg-pcard__price {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.btg-pcard__price.call-for-price {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.btg-pcard__mrp {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+  margin: 0;
+}
+
+.btg-pcard__cta {
+  background: var(--color-brand);
+  color: #fff;
+  height: 34px; /* More compact */
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12.5px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background var(--transition-fast);
+}
+
+.btg-pcard__cta:hover {
+  background: var(--color-brand-dark);
+}
+
+/* Mobile Adjustments */
+@media (max-width: 480px) {
+  .btg-pcard__content {
+    padding: var(--space-3);
+    gap: var(--space-1);
+  }
+  
+  .btg-pcard__name {
+    font-size: 13px;
+  }
+  
+  .btg-pcard__specs {
+    display: none; /* Hide specs on very small screens to save space */
+  }
+  
+  .btg-pcard__cta {
+    height: 36px;
+    font-size: 12px;
+  }
+}

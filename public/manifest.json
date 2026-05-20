@@ -1,0 +1,25 @@
+{
+  "short_name": "বাদল টায়ার ঘর",
+  "name": "বাদল টায়ার ঘর",
+  "description": "Bangladesh's #1 Tyre Wholesale Network. Premium B2B platform for tyres, tubes, and flaps.",
+  "icons": [
+    {
+      "src": "/assets/branding/logo.jpeg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/branding/logo.jpeg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#e11d48",
+  "background_color": "#ffffff",
+  "orientation": "portrait",
+  "scope": "/"
+}

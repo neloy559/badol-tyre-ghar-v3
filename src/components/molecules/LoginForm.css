@@ -1,0 +1,87 @@
+.btg-login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 400px;
+  padding: 2.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.btg-login-form__title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-white, #ffffff);
+  margin: 0;
+  text-align: center;
+}
+
+.btg-login-form__subtitle {
+  font-size: 0.95rem;
+  color: var(--color-gray-400, #9ca3af);
+  margin: -1rem 0 0.5rem 0;
+  text-align: center;
+}
+
+.btg-login-form__alert {
+  padding: 1rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.btg-login-form__alert--error {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.btg-login-form__actions {
+  margin-top: 0.5rem;
+}
+
+.btg-login-form__submit {
+  width: 100%;
+  height: 52px;
+  border-radius: 14px;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.btg-login-form__btn-content,
+.btg-login-form__loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.btg-login-form__spinner {
+  animation: btg-spin 1s linear infinite;
+}
+
+.btg-login-form__footer {
+  text-align: center;
+}
+
+.btg-login-form__link {
+  font-size: 0.9rem;
+  color: var(--color-primary, #ed1c24);
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+
+.btg-login-form__link:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+@keyframes btg-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

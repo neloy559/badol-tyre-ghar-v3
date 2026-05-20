@@ -1,0 +1,146 @@
+.shops-root {
+  padding: 4rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: 80vh;
+}
+
+.shops-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.shops-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--color-text);
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.shops-sub {
+  color: var(--color-text-muted);
+  font-size: 1.1rem;
+}
+
+.shops-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.shop-card {
+  background: white;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.shop-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.shop-card.main-shop {
+  border-color: var(--color-brand);
+  background: linear-gradient(to bottom right, #ffffff, #fff9f9);
+}
+
+.main-badge {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: var(--color-brand);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+}
+
+.shop-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--color-text);
+}
+
+.shop-detail {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+}
+
+.shop-icon {
+  margin-top: 0.2rem;
+  color: var(--color-brand);
+  flex-shrink: 0;
+}
+
+.shop-link {
+  color: var(--color-text);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.shop-link:hover {
+  color: var(--color-brand);
+}
+
+.shop-actions {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px dashed var(--color-border);
+}
+
+.btn-map {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-brand);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.btn-map:hover {
+  text-decoration: underline;
+}
+
+.shops-cta {
+  margin-top: 5rem;
+  text-align: center;
+  padding: 3rem;
+  background: #FAFAFA;
+  border-radius: var(--radius-xl);
+}
+
+.shops-cta p {
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.btn-wa-shops {
+  display: inline-block;
+  background: #25D366;
+  color: white;
+  padding: 0.75rem 2rem;
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  font-weight: 700;
+  transition: opacity 0.2s;
+}
+
+.btn-wa-shops:hover {
+  opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+  .shops-title { font-size: 2rem; }
+  .shops-grid { grid-template-columns: 1fr; }
+}

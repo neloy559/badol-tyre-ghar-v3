@@ -1,0 +1,124 @@
+.btg-auth-page {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 2rem;
+  background-color: #050505;
+}
+
+.btg-auth-page__container {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.btg-auth-page__branding {
+  text-align: center;
+}
+
+.btg-auth-page__logo-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.btg-auth-page__logo {
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
+  object-fit: cover;
+  box-shadow: 0 10px 30px rgba(237, 28, 36, 0.3);
+}
+
+.btg-auth-page__brand-name {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.btg-auth-page__content {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.btg-auth-page__form-wrap {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.btg-auth-page__switch {
+  text-align: center;
+}
+
+.btg-auth-page__switch p {
+  color: #9ca3af;
+  font-size: 0.95rem;
+}
+
+.btg-auth-page__switch button {
+  background: none;
+  border: none;
+  color: var(--color-primary, #ed1c24);
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0 0.25rem;
+  transition: opacity 0.2s;
+}
+
+.btg-auth-page__switch button:hover {
+  text-decoration: underline;
+}
+
+/* Background Effects */
+.btg-auth-page__background {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.btg-auth-page__bg-image {
+  position: absolute;
+  inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?q=80&w=2070&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.3;
+  filter: grayscale(1) contrast(1.2);
+}
+
+.btg-auth-page__bg-gradient {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 0%, #050505 80%);
+}
+
+@media (max-width: 640px) {
+  .btg-auth-page {
+    padding: 1rem;
+  }
+  
+  .btg-auth-page__logo {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .btg-auth-page__brand-name {
+    font-size: 1.25rem;
+  }
+}

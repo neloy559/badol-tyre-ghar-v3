@@ -1,0 +1,117 @@
+/* =================================================================
+   BTG V3 - Design System Variables (RedRhino / Zotno Light Theme)
+   ================================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+
+:root {
+  /* --- Brand Colors --- */
+  --color-brand:          #CC0000;
+  --color-brand-dark:     #990000;
+  --color-brand-light:    #FF3333;
+
+  /* Aliases used throughout the app */
+  --color-brand-primary:        #CC0000;
+  --color-brand-primary-light:  #FF3333;
+  --color-brand-primary-dark:   #990000;
+
+  /* --- Page & Surface --- */
+  --color-bg-base:        #FFFFFF;
+  --color-bg-surface:     #FFFFFF;
+  --color-bg-elevated:    #F9FAFB;
+  --color-bg-soft:        #F3F4F6;
+  --color-bg-hover:       #FFF5F5;
+  --color-section-alt:    #FAFAFA;
+
+  /* --- Text --- */
+  --color-text-primary:   #111111;
+  --color-text-secondary: #555555;
+  --color-text-muted:     #999999;
+
+  /* --- Borders --- */
+  --color-border:         #EEEEEE;
+  --color-border-focus:   #CC0000;
+
+  /* --- CTA --- */
+  --color-cta:            #CC0000;
+  --color-cta-text:       #FFFFFF;
+
+  /* --- Prices --- */
+  --color-price-sale:     #CC0000;
+  --color-price-mrp:      #999999;
+
+  /* --- Status Colors --- */
+  --color-success:        #16a34a;
+  --color-warning:        #d97706;
+  --color-danger:         #dc2626;
+  --color-info:           #2563eb;
+
+  /* --- WhatsApp --- */
+  --color-whatsapp:       #25D366;
+
+  /* --- Badge --- */
+  --color-badge-b2b-bg:     #FFF5F5;
+  --color-badge-b2b-text:   #CC0000;
+  --color-badge-admin-bg:   #FFF3E0;
+  --color-badge-admin-text: #E65100;
+  --color-badge-retail-bg:  #F0FFF4;
+  --color-badge-retail-text:#16a34a;
+
+  /* --- Typography --- */
+  --font-primary:   'Hind Siliguri', sans-serif;
+  --font-heading:   'Hind Siliguri', sans-serif;
+
+  --text-xs:   0.75rem;    /* 12px */
+  --text-sm:   0.8125rem;  /* 13px */
+  --text-base: 1rem;       /* 16px */
+  --text-lg:   1.125rem;   /* 18px */
+  --text-xl:   1.25rem;    /* 20px */
+  --text-2xl:  1.375rem;   /* 22px */
+  --text-3xl:  1.875rem;
+  --text-4xl:  2.25rem;
+
+  --weight-regular:   400;
+  --weight-medium:    500;
+  --weight-semibold:  600;
+  --weight-bold:      700;
+
+  /* --- Spacing --- */
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-5:  1.25rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  /* --- Border Radius --- */
+  --radius-xs:   2px;
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-xl:   16px;
+  --radius-full: 9999px;
+
+  /* --- Shadows (refined) --- */
+  --shadow-sm:    0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md:    0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+  --shadow-lg:    0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+  --shadow-brand: 0 4px 16px rgba(204,0,0,0.25);
+
+  /* --- Nav --- */
+  --color-nav-bg:     #FFFFFF;
+  --color-nav-border: #EEEEEE;
+
+  /* --- Footer --- */
+  --color-footer-bg:      #FFFFFF;
+  --color-footer-heading: #111111;
+  --color-footer-link:    #444444;
+
+  /* --- Transitions --- */
+  --transition-fast:   120ms ease;
+  --transition-normal: 220ms ease;
+  --transition-slow:   350ms ease;
+}

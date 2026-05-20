@@ -1,0 +1,151 @@
+.btg-cart-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+}
+
+.btg-floating-cart {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: 450px;
+  background: #ffffff;
+  border-left: 1px solid var(--color-border);
+  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  z-index: 1001;
+}
+
+.btg-cart-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btg-cart-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--color-text-primary);
+}
+
+.btg-cart-count {
+  background: var(--color-brand);
+  color: white;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 99px;
+}
+
+.btg-cart-close {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 4px;
+}
+
+.btg-cart-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+}
+
+.btg-cart-item {
+  display: flex;
+  gap: 1rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--color-border);
+  position: relative;
+}
+
+.item-image {
+  width: 70px;
+  height: 70px;
+  background: #f9f9f9;
+  border-radius: 12px;
+  padding: 4px;
+}
+
+.item-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-text-primary);
+}
+
+.item-variant {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.qty-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f3f4f6;
+  padding: 3px 8px;
+  border-radius: 8px;
+}
+
+.qty-wrap button {
+  color: var(--color-text-primary);
+}
+
+.qty-wrap span {
+  color: var(--color-text-primary);
+}
+
+.item-price {
+  font-weight: 700;
+  color: var(--color-brand);
+}
+
+.btg-cart-footer {
+  padding: 1.5rem;
+  background: #f9fafb;
+  border-top: 1px solid var(--color-border);
+}
+
+.cart-summary strong {
+  color: var(--color-text-primary);
+}
+
+@media (max-width: 768px) {
+  .btg-floating-cart {
+    top: 0;
+    left: auto;
+    right: 0;
+    bottom: 0;
+    width: 320px;
+    max-width: 85%;
+    height: 100vh;
+    transform: none !important;
+    border-radius: 0;
+    border: none;
+    border-left: 1px solid var(--color-border);
+    box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+  }
+
+  .btg-cart-header {
+    border-radius: 0;
+  }
+  .btg-cart-footer {
+    border-radius: 0;
+  }
+}
+
+/* Base animation override for mobile to prevent conflicting with translate(-50%, -50%) */
+@media (max-width: 768px) {
+  .btg-floating-cart[style*="transform: translate(-50%, -50%)"] {
+    /* framer-motion will handle the initial/animate/exit but we need to ensure the base centering remains */
+  }
+}

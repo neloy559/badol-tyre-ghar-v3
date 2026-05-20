@@ -1,0 +1,74 @@
+/* === BTGButton Atom Styles === */
+.btg-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-family: var(--font-primary);
+  font-weight: var(--weight-semibold);
+  border-radius: var(--radius-md);
+  transition: background var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast), opacity var(--transition-fast);
+  border: 2px solid transparent;
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+}
+
+/* --- Sizes --- */
+.btg-btn--sm  { padding: var(--space-2) var(--space-4); font-size: var(--text-sm); }
+.btg-btn--md  { padding: var(--space-3) var(--space-6); font-size: var(--text-base); }
+.btg-btn--lg  { padding: var(--space-4) var(--space-8); font-size: var(--text-lg); }
+
+/* --- Variants --- */
+.btg-btn--primary {
+  background: var(--color-brand-primary);
+  color: #fff;
+  box-shadow: var(--shadow-brand);
+}
+.btg-btn--primary:hover { background: var(--color-brand-primary-light); transform: translateY(-1px); }
+
+.btg-btn--secondary {
+  background: var(--color-bg-elevated);
+  color: var(--color-text-primary);
+  border-color: var(--color-border);
+}
+.btg-btn--secondary:hover { background: var(--color-bg-hover); }
+
+.btg-btn--outline {
+  background: transparent;
+  color: var(--color-brand-primary);
+  border-color: var(--color-brand-primary);
+}
+.btg-btn--outline:hover { background: rgba(0,86,179,0.1); }
+
+.btg-btn--ghost {
+  background: transparent;
+  color: var(--color-text-secondary);
+}
+.btg-btn--ghost:hover { background: var(--color-bg-hover); color: var(--color-text-primary); }
+
+.btg-btn--danger {
+  background: var(--color-danger);
+  color: #fff;
+}
+.btg-btn--danger:hover { opacity: 0.85; }
+
+/* --- States --- */
+.btg-btn:active { transform: scale(0.97); }
+.btg-btn:disabled,
+.btg-btn--loading {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* --- Spinner --- */
+.btg-btn__spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: btg-spin 0.6s linear infinite;
+}
+@keyframes btg-spin { to { transform: rotate(360deg); } }
