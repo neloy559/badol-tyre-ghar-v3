@@ -3,10 +3,11 @@ const router  = express.Router();
 const { protect, restrictTo } = require('../middleware/auth');
 
 // Domain Controllers
-const userAdmin      = require('../modules/users/user.admin.controller');
-const inquiryAdmin   = require('../modules/inquiry/inquiry.admin.controller');
-const marketingAdmin = require('../modules/marketing/marketing.admin.controller');
+const userAdmin        = require('../modules/users/user.admin.controller');
+const inquiryAdmin     = require('../modules/inquiry/inquiry.admin.controller');
+const marketingAdmin   = require('../modules/marketing/marketing.admin.controller');
 const searchIntelAdmin = require('../modules/catalog/searchIntelligence.admin.controller');
+const pdfAdmin         = require('../modules/catalog/pdf.admin.controller');
 
 // Sub-routers
 const catalogAdminRoutes = require('./admin.catalog');
@@ -33,9 +34,16 @@ router.get('/campaigns',       marketingAdmin.getCampaigns);
 router.patch('/campaigns/:id', marketingAdmin.updateCampaign);
 
 // 5. Search Intelligence
-router.get('/search-intelligence',                    searchIntelAdmin.getSearchLogs);
-router.post('/search-intelligence/:id/assign',        searchIntelAdmin.assignTag);
-router.delete('/search-intelligence/bulk-clear',      searchIntelAdmin.clearAssigned);
-router.delete('/search-intelligence/:id',             searchIntelAdmin.deleteSearchLog);
+router.get('/search-intelligence',               searchIntelAdmin.getSearchLogs);
+router.post('/search-intelligence/:id/assign',   searchIntelAdmin.assignTag);
+router.delete('/search-intelligence/bulk-clear', searchIntelAdmin.clearAssigned);
+router.delete('/search-intelligence/:id',        searchIntelAdmin.deleteSearchLog);
+
+// 6. PDF Management
+router.get('/pdf/manifest',          pdfAdmin.getManifest);
+router.get('/pdf/analytics',         pdfAdmin.getAnalytics);
+router.post('/pdf/mark-ready',       pdfAdmin.markReady);
+router.post('/pdf/mark-generating',  pdfAdmin.markGenerating);
+router.post('/pdf/mark-failed',      pdfAdmin.markFailed);
 
 module.exports = router;

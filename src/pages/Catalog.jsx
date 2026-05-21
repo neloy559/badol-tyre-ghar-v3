@@ -8,6 +8,8 @@ import FilterSidebar from '../components/organisms/FilterSidebar';
 import { pdf } from '@react-pdf/renderer';
 import CatalogDocument from '../components/pdf/CatalogDocument';
 import SEO from '../components/SEO';
+import { useAuth } from '../context/AuthContext';
+import { getCachedPdf, logPdfDownload } from '../hooks/usePdfCache';
 import './Catalog.css';
 
 const LIMIT = 24;
@@ -18,9 +20,11 @@ const Catalog = () => {
   const [searchInput, setSearchInput] = useState(searchParams.get('search') || '');
   const [pdfLoading, setPdfLoading] = useState(false);
   const sentinelRef = useRef(null);
+  const { user, isAuthenticated } = useAuth();
+  const isDealer = isAuthenticated && (user?.role === 'dealer' || user?.role === 'admin' || user?.role === 'editor');
 
   const category = searchParams.get('category');
-  const pdfName = category 
+  const pdfName = category
     ? category.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') + ' Catalog'
     : 'All Products Catalog';
 
@@ -28,15 +32,29 @@ const Catalog = () => {
     if (pdfLoading) return;
     setPdfLoading(true);
     try {
+      // 1. Check device cache first
+      const slug = category || 'all';
+      const cached = await getCachedPdf(slug);
+      if (cached) {
+        const url = URL.createObjectURL(cached.blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `BadolTyreGhar_${pdfName.replace(/\s+/g, '')}.pdf`;
+        a.click();
+        URL.revokeObjectURL(url);
+        logPdfDownload(slug, cached.versionHash, true);
+        return;
+      }
+
+      // 2. Generate fresh
       const params = new URLSearchParams();
       if (category) params.set('category', category);
       params.set('limit', '500');
-      params.set('page', '1');
       const res = await authApi.get('/catalog', { params });
       const prods = res.data?.data?.products || [];
 
       if (prods.length === 0) {
-        alert('No products found for this category.');
+        alert('No products found.');
         return;
       }
 
@@ -44,24 +62,18 @@ const Catalog = () => {
         <CatalogDocument
           products={prods}
           categoryName={category ? category.replace(/-/g, ' ') : 'All Products'}
+          whatsapp={import.meta.env.VITE_WHATSAPP_NUMBER || ''}
         />
       ).blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      let fileName = 'BadolTyreGhar_';
-      if (category) {
-        const name = category.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('');
-        fileName += name;
-      } else {
-        fileName += 'AllProducts';
-      }
-      fileName += `_${new Date().toISOString().slice(0,10)}.pdf`;
-      a.download = fileName;
+      a.download = `BadolTyreGhar_${pdfName.replace(/\s+/g, '')}_${new Date().toISOString().slice(0,10)}.pdf`;
       a.click();
       URL.revokeObjectURL(url);
+      logPdfDownload(slug, null, false);
     } catch (err) {
-      console.error('PDF generation error', err);
+      console.error('PDF error:', err);
       alert('PDF generation failed. Please try again.');
     } finally {
       setPdfLoading(false);
@@ -176,17 +188,19 @@ const Catalog = () => {
             />
           </div>
           
-          <button
-            onClick={handleGeneratePDF}
-            className="btg-catalog__download-btn"
-            title={`Download ${pdfName}`}
-            disabled={pdfLoading}
-          >
-            {pdfLoading
-              ? <><Loader2 size={18} className="spin" /><span className="download-text">Generating...</span></>
-              : <><Download size={18} /><span className="download-text">{category ? `${pdfName} PDF` : 'Download PDF'}</span></>
-            }
-          </button>
+          {isDealer && (
+            <button
+              onClick={handleGeneratePDF}
+              className="btg-catalog__download-btn"
+              title={`Download ${pdfName}`}
+              disabled={pdfLoading}
+            >
+              {pdfLoading
+                ? <><Loader2 size={18} className="spin" /><span className="download-text">Generating...</span></>
+                : <><Download size={18} /><span className="download-text">{category ? `${pdfName} PDF` : 'Download PDF'}</span></>
+              }
+            </button>
+          )}
 
           <button
             className="btg-catalog__mobile-filter"

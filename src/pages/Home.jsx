@@ -10,6 +10,7 @@ import BannerSlider from '../components/organisms/BannerSlider';
 import { useAuth } from '../context/AuthContext';
 import { pdf } from '@react-pdf/renderer';
 import CatalogDocument from '../components/pdf/CatalogDocument';
+import { usePdfCache, getCachedPdf, logPdfDownload } from '../hooks/usePdfCache';
 import './Home.css';
 
 
@@ -28,7 +29,8 @@ const TRUST = [
 ];
 
 export default function Home() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
+  const isDealer = isAuthenticated && (user?.role === 'dealer' || user?.role === 'admin' || user?.role === 'editor');
   const { data, isLoading } = useQuery({ queryKey: ['featured'], queryFn: fetchFeatured });
   const { data: brandingData } = useQuery({
     queryKey: ['branding'],
@@ -38,31 +40,52 @@ export default function Home() {
   const products = data?.products || [];
   const { trackPageView } = useAnalytics();
   const [downloadingSlug, setDownloadingSlug] = useState(null);
+  const whatsapp = brandingData?.config?.contact?.whatsapp || import.meta.env.VITE_WHATSAPP_NUMBER || '';
+
+  // Pre-fetch PDFs on WiFi for dealers
+  usePdfCache(isDealer);
 
   useEffect(() => {
     trackPageView('Bangladesh\'s #1 Tyre Wholesale Network');
   }, []);
 
   const handleCategoryPDF = async (e, slug, label) => {
-    e.preventDefault(); // don't navigate to catalog
+    e.preventDefault();
     e.stopPropagation();
     if (downloadingSlug) return;
     setDownloadingSlug(slug);
     try {
-      const params = new URLSearchParams({ category: slug, limit: '1000' });
+      // 1. Check device cache first
+      const cached = await getCachedPdf(slug);
+      if (cached) {
+        const url = URL.createObjectURL(cached.blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `BadolTyreGhar_${label.replace(/\s+/g, '')}.pdf`;
+        a.click();
+        URL.revokeObjectURL(url);
+        logPdfDownload(slug, cached.versionHash, true);
+        return;
+      }
+
+      // 2. Generate fresh
+      const params = new URLSearchParams({ category: slug, limit: '500' });
       const res = await authApi.get('/catalog', { params });
-      const products = res.data?.data?.products || [];
+      const prods = res.data?.data?.products || [];
+
       const blob = await pdf(
-        <CatalogDocument products={products} categoryName={label} />
+        <CatalogDocument products={prods} categoryName={label} whatsapp={whatsapp} />
       ).blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `BadolTyreGhar_${label.replace(/\s+/g, '')}.pdf`;
+      a.download = `BadolTyreGhar_${label.replace(/\s+/g, '')}_${new Date().toISOString().slice(0,10)}.pdf`;
       a.click();
       URL.revokeObjectURL(url);
+      logPdfDownload(slug, null, false);
     } catch (err) {
       console.error('PDF error:', err);
+      alert('PDF generation failed. Please try again.');
     } finally {
       setDownloadingSlug(null);
     }
@@ -142,17 +165,19 @@ export default function Home() {
             <Link key={slug} to={`/catalog?category=${slug}`} className="category-card">
               <img src={getCategoryLogo(slug)} alt={label} className="category-card-img" loading="lazy" />
               <p className="category-card-label">{label}</p>
-              <button
-                className={`category-pdf-btn ${downloadingSlug === slug ? 'loading' : ''}`}
-                onClick={(e) => handleCategoryPDF(e, slug, label)}
-                title={`Download ${label} PDF`}
-                disabled={!!downloadingSlug}
-              >
-                {downloadingSlug === slug
-                  ? <span className="pdf-spinner" />
-                  : <><Download size={11} /> PDF</>
-                }
-              </button>
+              {isDealer && (
+                <button
+                  className={`category-pdf-btn ${downloadingSlug === slug ? 'loading' : ''}`}
+                  onClick={(e) => handleCategoryPDF(e, slug, label)}
+                  title={`Download ${label} PDF`}
+                  disabled={!!downloadingSlug}
+                >
+                  {downloadingSlug === slug
+                    ? <span className="pdf-spinner" />
+                    : <><Download size={11} /> PDF</>
+                  }
+                </button>
+              )}
             </Link>
           ))}
         </div>
