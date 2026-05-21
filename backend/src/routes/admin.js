@@ -6,6 +6,7 @@ const { protect, restrictTo } = require('../middleware/auth');
 const userAdmin      = require('../modules/users/user.admin.controller');
 const inquiryAdmin   = require('../modules/inquiry/inquiry.admin.controller');
 const marketingAdmin = require('../modules/marketing/marketing.admin.controller');
+const searchIntelAdmin = require('../modules/catalog/searchIntelligence.admin.controller');
 
 // Sub-routers
 const catalogAdminRoutes = require('./admin.catalog');
@@ -18,17 +19,23 @@ router.use(restrictTo('admin', 'editor'));
 router.use('/catalog', catalogAdminRoutes);
 
 // 2. Dealer Verification
-router.get('/dealers/pending',    userAdmin.getPendingDealers);
-router.patch('/dealers/:id/verify', userAdmin.verifyDealer);
+router.get('/dealers/pending',        userAdmin.getPendingDealers);
+router.patch('/dealers/:id/verify',   userAdmin.verifyDealer);
 router.patch('/dealers/:id/discount', userAdmin.setDealerDiscount);
 
 // 3. Inquiry CRM
-router.get('/inquiries',            inquiryAdmin.getInquiries);
+router.get('/inquiries',              inquiryAdmin.getInquiries);
 router.patch('/inquiries/:id/status', inquiryAdmin.updateInquiryStatus);
 
 // 4. Campaign Manager
-router.post('/campaigns',     marketingAdmin.createCampaign);
-router.get('/campaigns',      marketingAdmin.getCampaigns);
+router.post('/campaigns',      marketingAdmin.createCampaign);
+router.get('/campaigns',       marketingAdmin.getCampaigns);
 router.patch('/campaigns/:id', marketingAdmin.updateCampaign);
+
+// 5. Search Intelligence
+router.get('/search-intelligence',                    searchIntelAdmin.getSearchLogs);
+router.post('/search-intelligence/:id/assign',        searchIntelAdmin.assignTag);
+router.delete('/search-intelligence/bulk-clear',      searchIntelAdmin.clearAssigned);
+router.delete('/search-intelligence/:id',             searchIntelAdmin.deleteSearchLog);
 
 module.exports = router;

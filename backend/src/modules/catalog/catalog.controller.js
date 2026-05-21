@@ -1,10 +1,28 @@
-const Product = require('./models/Product');
-const Category = require('./models/Category');
-const Brand = require('./models/Brand');
-const Campaign = require('../marketing/campaign.model');
+const Product   = require('./models/Product');
+const Category  = require('./models/Category');
+const Brand     = require('./models/Brand');
+const Campaign  = require('../marketing/campaign.model');
+const SearchLog = require('./models/SearchLog');
 const PricingService = require('../../utils/PricingService');
 const { sendSuccess, sendError } = require('../../utils/sendResponse');
 const { toEnglishDigits } = require('../../utils/searchHelper');
+
+/**
+ * Silent search term logger — fire-and-forget, never blocks response.
+ * Upserts by term: increments count and updates resultCount + lastSearchedAt.
+ */
+const logSearchTerm = (term, resultCount = 0) => {
+  if (!term || term.trim().length < 2) return;
+  const normalized = term.trim().toLowerCase();
+  SearchLog.findOneAndUpdate(
+    { term: normalized },
+    {
+      $inc: { count: 1 },
+      $set: { resultCount, lastSearchedAt: new Date() },
+    },
+    { upsert: true, new: true }
+  ).exec().catch(() => {}); // swallow errors — never crash main flow
+};
 
 // ── Helpers ────────────────────────────────────────────────────
 
@@ -137,6 +155,9 @@ exports.getProducts = async (req, res) => {
       query.lean(),
       Product.countDocuments(filter)
     ]);
+
+    // Silent search term logging (fire-and-forget)
+    if (search) logSearchTerm(search, total);
 
     // Apply Pricing & Campaigns
     const role       = req.user?.role || 'customer';
@@ -276,6 +297,9 @@ exports.getSuggestions = async (req, res) => {
     .populate('category', 'slug')
     .limit(10)
     .lean();
+
+    // Silent logging for suggestion searches
+    logSearchTerm(q, suggestions.length);
 
     sendSuccess(res, 200, 'Suggestions fetched.', suggestions);
   } catch (err) {
