@@ -254,6 +254,17 @@ export default function Layout() {
 
       <FloatingCart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
 
+      {/* ── WhatsApp FAB — separate from nav, always visible on mobile ── */}
+      <a
+        href={`https://wa.me/${brandingData?.config?.contact?.whatsapp || import.meta.env.VITE_WHATSAPP_NUMBER || '8801647794452'}`}
+        target="_blank"
+        rel="noreferrer"
+        className="whatsapp-fab"
+        aria-label="Contact on WhatsApp"
+      >
+        <WhatsAppLogo size={26} />
+      </a>
+
       {/* ── Footer ───────────────────────────────────── */}
       <footer className="site-footer">
         <div className="footer-inner">
@@ -314,18 +325,13 @@ export default function Layout() {
 
       {/* ── Mobile Bottom Navigation ──────────────────── */}
       <nav className="bottom-nav">
-        {/* Sliding active indicator */}
+        {/* Sliding active indicator — 4 tabs = 25% each */}
         <div
           className="bottom-nav-indicator"
           style={{ transform: `translateX(${currentTabIndex * 100}%)` }}
         />
-        {navItems.map((item, index) => {
+        {navItems.map((item) => {
           const Icon = item.icon;
-          const isActive = !item.onClick && item.to && (
-            item.to === '/'
-              ? location.pathname === '/'
-              : location.pathname.startsWith(item.to)
-          );
 
           if (item.onClick) {
             return (
@@ -342,6 +348,7 @@ export default function Layout() {
               </button>
             );
           }
+
           return (
             <NavLink
               key={item.to}
@@ -350,7 +357,7 @@ export default function Layout() {
               className={({ isActive }) => `bottom-nav-item${isActive ? ' active' : ''}`}
             >
               <div className="nav-icon-wrap">
-                <Icon size={20} strokeWidth={isActive ? 2.2 : 1.8} />
+                <Icon size={20} strokeWidth={1.8} />
               </div>
               <span>{item.label}</span>
             </NavLink>

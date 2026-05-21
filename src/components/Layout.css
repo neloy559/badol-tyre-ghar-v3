@@ -415,15 +415,13 @@
   border-top: 1px solid var(--color-border);
   display: flex;
   align-items: stretch;
-  /* 4 equal tabs */
 }
 
-/* Sliding active indicator bar */
+/* Sliding active indicator — 4 equal tabs = 25% each */
 .bottom-nav-indicator {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 25%; /* 1/4 of nav = one tab */
+  top: 0; left: 0;
+  width: 25%;
   height: 2px;
   background: var(--color-brand);
   border-radius: 0 0 2px 2px;
@@ -451,13 +449,7 @@
 }
 
 .bottom-nav-item.active,
-.bottom-nav-item:hover {
-  color: var(--color-brand);
-}
-
-.bottom-nav-item.active .nav-icon-wrap svg {
-  filter: drop-shadow(0 0 4px rgba(204,0,0,0.25));
-}
+.bottom-nav-item:hover { color: var(--color-brand); }
 
 .nav-icon-wrap {
   position: relative;
@@ -468,8 +460,7 @@
 
 .nav-badge {
   position: absolute;
-  top: -6px;
-  right: -8px;
+  top: -6px; right: -8px;
   background: var(--color-brand);
   color: #fff;
   font-size: 0.65rem;
@@ -483,14 +474,11 @@
   border: 1.5px solid #fff;
 }
 
-.cart-icon-wrap {
-  position: relative;
-}
+.cart-icon-wrap { position: relative; }
 
 .cart-badge {
   position: absolute;
-  top: -8px;
-  right: -8px;
+  top: -8px; right: -8px;
   background: var(--color-brand);
   color: #fff;
   font-size: 0.65rem;

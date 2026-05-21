@@ -85,3 +85,13 @@ export const useSwipeNavigation = (elementRef) => {
 };
 
 export { TAB_ROUTES };
+
+/**
+ * Maps logical tab index (0-3) to visual position (0-4) in the 5-item nav.
+ * WhatsApp occupies visual slot 2, so route tabs 2 and 3 shift right.
+ * 0→0, 1→1, 2→3, 3→4
+ */
+export const getVisualTabPosition = (tabIndex) => {
+  if (tabIndex <= 1) return tabIndex;
+  return tabIndex + 1; // skip the WhatsApp center slot
+};
