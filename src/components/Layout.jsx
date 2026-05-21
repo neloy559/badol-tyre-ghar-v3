@@ -118,6 +118,13 @@ export default function Layout() {
   const navItems = [
     { to: '/',        icon: Home,        label: 'হোম' },
     { to: '/catalog', icon: Grid3x3,     label: 'ক্যাটালগ' },
+    {
+      href: `https://wa.me/${brandingData?.config?.contact?.whatsapp || import.meta.env.VITE_WHATSAPP_NUMBER || '8801647794452'}`,
+      icon: WhatsAppLogo,
+      label: 'WhatsApp',
+      isExternal: true,
+      isCenter: true,
+    },
     { onClick: () => setIsCartOpen(true), icon: ShoppingBag, label: 'কোটেশন', count: cartCount },
     { to: '/profile', icon: User,        label: 'অ্যাকাউন্ট' },
   ];
@@ -241,10 +248,13 @@ export default function Layout() {
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={location.pathname}
-            initial={{ x: slideDirection * 60, opacity: 0 }}
+            initial={{ x: slideDirection * 40, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            exit={{ x: slideDirection * -60, opacity: 0 }}
-            transition={{ duration: 0.22, ease: [0.25, 0.46, 0.45, 0.94] }}
+            exit={{ x: slideDirection * -40, opacity: 0 }}
+            transition={{
+              x: { type: 'spring', stiffness: 380, damping: 38, mass: 0.8 },
+              opacity: { duration: 0.15 },
+            }}
             style={{ width: '100%' }}
           >
             <Outlet />
@@ -253,17 +263,6 @@ export default function Layout() {
       </main>
 
       <FloatingCart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
-
-      {/* ── WhatsApp FAB — separate from nav, always visible on mobile ── */}
-      <a
-        href={`https://wa.me/${brandingData?.config?.contact?.whatsapp || import.meta.env.VITE_WHATSAPP_NUMBER || '8801647794452'}`}
-        target="_blank"
-        rel="noreferrer"
-        className="whatsapp-fab"
-        aria-label="Contact on WhatsApp"
-      >
-        <WhatsAppLogo size={26} />
-      </a>
 
       {/* ── Footer ───────────────────────────────────── */}
       <footer className="site-footer">
@@ -325,14 +324,41 @@ export default function Layout() {
 
       {/* ── Mobile Bottom Navigation ──────────────────── */}
       <nav className="bottom-nav">
-        {/* Sliding active indicator — 4 tabs = 25% each */}
+        {/*
+          5 items total. WhatsApp (index 2) is NOT a tab — it's a center FAB.
+          The 4 route tabs sit at visual slots 0,1,3,4 (each 20% wide).
+          Indicator maps: tabIndex 0→0%, 1→20%, 2→60%, 3→80%
+        */}
         <div
           className="bottom-nav-indicator"
-          style={{ transform: `translateX(${currentTabIndex * 100}%)` }}
+          style={{
+            transform: `translateX(${
+              currentTabIndex <= 1
+                ? currentTabIndex * 100
+                : (currentTabIndex + 1) * 100
+            }%)`
+          }}
         />
         {navItems.map((item) => {
           const Icon = item.icon;
 
+          // Center WhatsApp elevated FAB
+          if (item.isCenter) {
+            return (
+              <a
+                key={item.label}
+                href={item.href}
+                target="_blank"
+                rel="noreferrer"
+                className="bottom-nav-item center-action"
+                aria-label="Contact on WhatsApp"
+              >
+                <Icon size={26} />
+              </a>
+            );
+          }
+
+          // Cart (onClick)
           if (item.onClick) {
             return (
               <button
@@ -349,6 +375,7 @@ export default function Layout() {
             );
           }
 
+          // Regular route tabs
           return (
             <NavLink
               key={item.to}
