@@ -10,6 +10,12 @@
       "destination": "/index.html"
     }
   ],
+  "crons": [
+    {
+      "path": "/api/cron/regenerate-pdfs",
+      "schedule": "0 21 * * *"
+    }
+  ],
   "headers": [
     {
       "source": "/assets/(.*)",

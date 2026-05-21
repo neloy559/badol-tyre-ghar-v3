@@ -2,7 +2,7 @@ import React from 'react';
 import { Routes, Route, NavLink } from 'react-router-dom';
 import {
   Users, Package, Tag, MessageSquare, BarChart2, Download,
-  TrendingUp, FileSpreadsheet, Layers, Bookmark, Image as ImageIcon, Search
+  TrendingUp, FileSpreadsheet, Layers, Bookmark, Image as ImageIcon, Search, FileText
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -20,6 +20,7 @@ import AssetAuditor       from './admin/AssetAuditor';
 import BrandManager       from './admin/BrandManager';
 import BrandingManager    from './admin/BrandingManager';
 import SearchIntelligence from './admin/SearchIntelligence';
+import PdfManager         from './admin/PdfManager';
 
 import './Admin.css';
 
@@ -29,6 +30,7 @@ const ADMIN_LINKS = [
   { to: '/admin/products',     icon: Layers,          label: 'Products' },
   { to: '/admin/tags',         icon: Tag,             label: 'Search Tags' },
   { to: '/admin/search-intel', icon: Search,          label: 'Search Intel' },
+  { to: '/admin/pdf',          icon: FileText,        label: 'PDF Catalogs' },
   { to: '/admin/brands',       icon: Bookmark,        label: 'Brands' },
   { to: '/admin/auditor',      icon: Package,         label: 'Asset Audit' },
   { to: '/admin/dealers',      icon: Users,           label: 'Dealers' },
@@ -74,6 +76,7 @@ export default function Admin() {
             <Route path="products"    element={<ProductsManager />} />
             <Route path="tags"        element={<TagsManager />} />
             <Route path="search-intel" element={<SearchIntelligence />} />
+            <Route path="pdf"         element={<PdfManager />} />
             <Route path="brands"      element={<BrandManager />} />
             <Route path="auditor"     element={<AssetAuditor />} />
             <Route path="dealers"     element={<DealerQueue />} />

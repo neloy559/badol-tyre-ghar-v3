@@ -10,7 +10,7 @@ import './BrandingManager.css';
 
 export default function BrandingManager() {
   const queryClient = useQueryClient();
-  const [activeTab, setActiveTab] = useState('banners'); // 'banners' or 'config'
+  const [activeTab, setActiveTab] = useState('banners'); // 'banners' | 'config' | 'about'
   const [toast, setToast] = useState(null);
 
   const showToast = (msg, type = 'success') => {
@@ -113,10 +113,12 @@ export default function BrandingManager() {
         <div className="branding-tabs">
           <button className={`tab-btn ${activeTab === 'banners' ? 'active' : ''}`} onClick={() => setActiveTab('banners')}>Banners</button>
           <button className={`tab-btn ${activeTab === 'config' ? 'active' : ''}`} onClick={() => setActiveTab('config')}>Site Settings</button>
+          <button className={`tab-btn ${activeTab === 'about' ? 'active' : ''}`} onClick={() => setActiveTab('about')}>About Us Photos</button>
         </div>
       </div>
 
       {activeTab === 'banners' ? (
+        /* ... banners section unchanged ... */
         <div className="banners-section">
           <div className="section-actions">
             <button className="btn-add" onClick={handleAddBanner}>
@@ -169,7 +171,7 @@ export default function BrandingManager() {
             ))}
           </div>
         </div>
-      ) : (
+      ) : activeTab === 'config' ? (
         <div className="config-section">
            <div className="config-grid">
               <div className="config-card logo-card">
@@ -224,7 +226,84 @@ export default function BrandingManager() {
               </div>
            </div>
         </div>
+      ) : (
+        /* ── About Us Photos Tab ── */
+        <AboutPhotosTab config={config} updateConfig={updateConfig} showToast={showToast} />
       )}
+    </div>
+  );
+}
+
+/* ── About Us Photo Uploader ─────────────────────────────────── */
+function AboutPhotosTab({ config, updateConfig, showToast }) {
+  const PHOTOS = [
+    { key: 'about.fatherPhoto', label: "Father's Photo", desc: 'MD. Mostaq Sharker Badol', hint: 'Clear portrait, min 400×400px' },
+    { key: 'about.sonPhoto',    label: "Son's Photo",    desc: 'MD. Faiaz Sharker Neloy', hint: 'Clear portrait, min 400×400px' },
+    { key: 'about.shopPhoto',   label: 'Shop Front',     desc: 'Exterior of the store',   hint: 'Landscape photo, min 800×400px' },
+  ];
+
+  const handlePhotoUpload = (key) => async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      updateConfig.mutate({ [key]: reader.result });
+      showToast('Photo updated!');
+    };
+    reader.readAsDataURL(file);
+  };
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      <p style={{ fontSize: '13px', color: 'var(--color-text-muted)', lineHeight: 1.6 }}>
+        These photos appear on the <strong>About Us</strong> back page of every PDF catalog. Upload clear, professional photos for the best impression.
+      </p>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '16px' }}>
+        {PHOTOS.map(({ key, label, desc, hint }) => {
+          const currentUrl = key.split('.').reduce((obj, k) => obj?.[k], config);
+          return (
+            <div key={key} style={{
+              background: '#fff', border: '1px solid var(--color-border)',
+              borderRadius: '12px', padding: '16px', display: 'flex',
+              flexDirection: 'column', gap: '12px',
+            }}>
+              <div>
+                <p style={{ fontWeight: 700, fontSize: '13px', margin: 0 }}>{label}</p>
+                <p style={{ fontSize: '11px', color: 'var(--color-text-muted)', margin: '2px 0 0' }}>{desc}</p>
+              </div>
+
+              {/* Preview */}
+              <div style={{
+                width: '100%', aspectRatio: key.includes('shop') ? '2/1' : '1/1',
+                background: '#f5f5f5', borderRadius: '8px', overflow: 'hidden',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                {currentUrl ? (
+                  <img src={currentUrl} alt={label} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  <span style={{ fontSize: '11px', color: '#ccc' }}>No photo uploaded</span>
+                )}
+              </div>
+
+              {/* Upload button */}
+              <label style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+                background: 'var(--color-brand)', color: '#fff',
+                padding: '8px 0', borderRadius: '8px',
+                cursor: 'pointer', fontWeight: 600, fontSize: '12px',
+              }}>
+                <UploadCloud size={14} />
+                {currentUrl ? 'Replace Photo' : 'Upload Photo'}
+                <input type="file" hidden accept="image/*" onChange={handlePhotoUpload(key)} />
+              </label>
+
+              <p style={{ fontSize: '10px', color: 'var(--color-text-muted)', margin: 0, textAlign: 'center' }}>
+                {hint}
+              </p>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
