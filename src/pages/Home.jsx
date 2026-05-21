@@ -7,7 +7,9 @@ import { useAnalytics } from '../hooks/useAnalytics';
 import { useEffect } from 'react';
 import SEO from '../components/SEO';
 import BannerSlider from '../components/organisms/BannerSlider';
+import { useAuth } from '../context/AuthContext';
 import './Home.css';
+
 
 const fetchFeatured = async () =>
   (await api.get('/products', { params: { limit: 12, page: 1 } })).data.data;
@@ -24,6 +26,7 @@ const TRUST = [
 ];
 
 export default function Home() {
+  const { isAuthenticated } = useAuth();
   const { data, isLoading } = useQuery({ queryKey: ['featured'], queryFn: fetchFeatured });
   const { data: brandingData } = useQuery({
     queryKey: ['branding'],
@@ -62,6 +65,11 @@ export default function Home() {
                 </a>
               </div>
               <p className="hero-tagline">PREMIUM · PERFORMANCE · TRUSTED</p>
+              {isAuthenticated && (
+                <a href="/catalog.pdf" download className="btn-hero-primary">
+                  ডাউনলোড ক্যাটালগ <ArrowRight size={15} />
+                </a>
+              )}
               <Link to="/catalog" className="btn-hero-primary">
                 Browse Catalog <ArrowRight size={15} />
               </Link>
@@ -80,6 +88,8 @@ export default function Home() {
           </div>
         </section>
       )}
+
+
 
       {/* Trust Strip */}
       <div className="trust-strip">

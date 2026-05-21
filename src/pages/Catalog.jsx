@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
-import { Search, SlidersHorizontal, PackageOpen, Loader2 } from 'lucide-react';
-import api from '../services/api';
+import { Search, SlidersHorizontal, PackageOpen, Loader2, Download } from 'lucide-react';
+import { authApi } from '../services/api';
 import ProductCard from '../components/molecules/ProductCard';
 import FilterSidebar from '../components/organisms/FilterSidebar';
+import { pdf } from '@react-pdf/renderer';
+import CatalogDocument from '../components/pdf/CatalogDocument';
 import SEO from '../components/SEO';
 import './Catalog.css';
 
@@ -15,6 +17,45 @@ const Catalog = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [searchInput, setSearchInput] = useState(searchParams.get('search') || '');
   const sentinelRef = useRef(null);
+
+  const category = searchParams.get('category');
+  const pdfUrl = category ? `/${category}-catalog.pdf` : '/all-products-catalog.pdf';
+  const pdfName = category 
+    ? category.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') + ' Catalog'
+    : 'All Products Catalog';
+
+  const handleGeneratePDF = async () => {
+    try {
+      const params = new URLSearchParams();
+      if (category) params.set('category', category);
+      params.set('limit', '1000');
+      const res = await authApi.get('/catalog', { params });
+      const products = res.data?.data?.products || [];
+
+      const blob = await pdf(
+        <CatalogDocument
+          products={products}
+          categoryName={category ? category.replace(/-/g, ' ') : 'All Products'}
+        />
+      ).blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      let fileName = 'BadolTyreGhar_';
+      if (category) {
+        const name = category.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('');
+        fileName += name;
+      } else {
+        fileName += 'products';
+      }
+      fileName += '.pdf';
+      a.download = fileName;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('PDF generation error', err);
+    }
+  };
 
   // ── Lock body scroll when sidebar is open (Mobile) ───────────
   useEffect(() => {
@@ -65,7 +106,7 @@ const Catalog = () => {
       params.delete('page');
       params.set('page', pageParam);
       params.set('limit', LIMIT);
-      const res = await api.get('/catalog', { params });
+      const res = await authApi.get('/catalog', { params });
       return res.data.data;
     },
     initialPageParam: 1,
@@ -123,6 +164,12 @@ const Catalog = () => {
               onChange={(e) => setSearchInput(e.target.value)}
             />
           </div>
+          
+          <button onClick={handleGeneratePDF} className="btg-catalog__download-btn" title={pdfName}>
+  <Download size={18} />
+  <span className="download-text">Download PDF</span>
+</button>
+
           <button
             className="btg-catalog__mobile-filter"
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}

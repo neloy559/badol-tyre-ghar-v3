@@ -24,7 +24,7 @@ const WhatsAppLogo = ({ size = 18 }) => (
 export default function Product() {
   const { slug }       = useParams();
   const navigate       = useNavigate();
-  const { user, isB2B } = useAuth();
+  const { user } = useAuth();
   const { addToCart: addItem } = useCart();
   const queryClient    = useQueryClient();
   const { trackPageView, logEvent } = useAnalytics();
@@ -267,7 +267,7 @@ export default function Product() {
                 <span className="product-price-original">৳ {variant.originalPrice.toLocaleString()}</span>
               )}
               <span className="product-price-final">৳ {variant?.price?.toLocaleString() || 'Call for Price'}</span>
-              {!isB2B && <p className="product-price-note">Login as B2B dealer for wholesale pricing</p>}
+              {!user && <p className="product-price-note">Login as B2B dealer for wholesale pricing</p>}
             </>
           )}
         </div>
