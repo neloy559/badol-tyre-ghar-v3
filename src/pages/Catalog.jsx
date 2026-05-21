@@ -16,25 +16,33 @@ const Catalog = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [searchInput, setSearchInput] = useState(searchParams.get('search') || '');
+  const [pdfLoading, setPdfLoading] = useState(false);
   const sentinelRef = useRef(null);
 
   const category = searchParams.get('category');
-  const pdfUrl = category ? `/${category}-catalog.pdf` : '/all-products-catalog.pdf';
   const pdfName = category 
     ? category.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') + ' Catalog'
     : 'All Products Catalog';
 
   const handleGeneratePDF = async () => {
+    if (pdfLoading) return;
+    setPdfLoading(true);
     try {
       const params = new URLSearchParams();
       if (category) params.set('category', category);
-      params.set('limit', '1000');
+      params.set('limit', '500');
+      params.set('page', '1');
       const res = await authApi.get('/catalog', { params });
-      const products = res.data?.data?.products || [];
+      const prods = res.data?.data?.products || [];
+
+      if (prods.length === 0) {
+        alert('No products found for this category.');
+        return;
+      }
 
       const blob = await pdf(
         <CatalogDocument
-          products={products}
+          products={prods}
           categoryName={category ? category.replace(/-/g, ' ') : 'All Products'}
         />
       ).blob();
@@ -46,14 +54,17 @@ const Catalog = () => {
         const name = category.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('');
         fileName += name;
       } else {
-        fileName += 'products';
+        fileName += 'AllProducts';
       }
-      fileName += '.pdf';
+      fileName += `_${new Date().toISOString().slice(0,10)}.pdf`;
       a.download = fileName;
       a.click();
       URL.revokeObjectURL(url);
     } catch (err) {
       console.error('PDF generation error', err);
+      alert('PDF generation failed. Please try again.');
+    } finally {
+      setPdfLoading(false);
     }
   };
 
@@ -165,9 +176,16 @@ const Catalog = () => {
             />
           </div>
           
-          <button onClick={handleGeneratePDF} className="btg-catalog__download-btn" title={`Download ${pdfName}`}>
-            <Download size={18} />
-            <span className="download-text">{category ? `${pdfName} PDF` : 'Download PDF'}</span>
+          <button
+            onClick={handleGeneratePDF}
+            className="btg-catalog__download-btn"
+            title={`Download ${pdfName}`}
+            disabled={pdfLoading}
+          >
+            {pdfLoading
+              ? <><Loader2 size={18} className="spin" /><span className="download-text">Generating...</span></>
+              : <><Download size={18} /><span className="download-text">{category ? `${pdfName} PDF` : 'Download PDF'}</span></>
+            }
           </button>
 
           <button
