@@ -165,10 +165,10 @@ const Catalog = () => {
             />
           </div>
           
-          <button onClick={handleGeneratePDF} className="btg-catalog__download-btn" title={pdfName}>
-  <Download size={18} />
-  <span className="download-text">Download PDF</span>
-</button>
+          <button onClick={handleGeneratePDF} className="btg-catalog__download-btn" title={`Download ${pdfName}`}>
+            <Download size={18} />
+            <span className="download-text">{category ? `${pdfName} PDF` : 'Download PDF'}</span>
+          </button>
 
           <button
             className="btg-catalog__mobile-filter"

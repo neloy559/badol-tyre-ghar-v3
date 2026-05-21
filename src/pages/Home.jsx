@@ -1,13 +1,15 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowRight, Truck, ShieldCheck, Grid3x3 } from 'lucide-react';
-import api from '../services/api';
+import { ArrowRight, Truck, ShieldCheck, Grid3x3, Download } from 'lucide-react';
+import api, { authApi } from '../services/api';
 import ProductCard from '../components/molecules/ProductCard';
 import { useAnalytics } from '../hooks/useAnalytics';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import SEO from '../components/SEO';
 import BannerSlider from '../components/organisms/BannerSlider';
 import { useAuth } from '../context/AuthContext';
+import { pdf } from '@react-pdf/renderer';
+import CatalogDocument from '../components/pdf/CatalogDocument';
 import './Home.css';
 
 
@@ -35,10 +37,36 @@ export default function Home() {
 
   const products = data?.products || [];
   const { trackPageView } = useAnalytics();
+  const [downloadingSlug, setDownloadingSlug] = useState(null);
 
   useEffect(() => {
     trackPageView('Bangladesh\'s #1 Tyre Wholesale Network');
   }, []);
+
+  const handleCategoryPDF = async (e, slug, label) => {
+    e.preventDefault(); // don't navigate to catalog
+    e.stopPropagation();
+    if (downloadingSlug) return;
+    setDownloadingSlug(slug);
+    try {
+      const params = new URLSearchParams({ category: slug, limit: '1000' });
+      const res = await authApi.get('/catalog', { params });
+      const products = res.data?.data?.products || [];
+      const blob = await pdf(
+        <CatalogDocument products={products} categoryName={label} />
+      ).blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `BadolTyreGhar_${label.replace(/\s+/g, '')}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('PDF error:', err);
+    } finally {
+      setDownloadingSlug(null);
+    }
+  };
 
   return (
     <div className="home-root">
@@ -114,6 +142,17 @@ export default function Home() {
             <Link key={slug} to={`/catalog?category=${slug}`} className="category-card">
               <img src={getCategoryLogo(slug)} alt={label} className="category-card-img" loading="lazy" />
               <p className="category-card-label">{label}</p>
+              <button
+                className={`category-pdf-btn ${downloadingSlug === slug ? 'loading' : ''}`}
+                onClick={(e) => handleCategoryPDF(e, slug, label)}
+                title={`Download ${label} PDF`}
+                disabled={!!downloadingSlug}
+              >
+                {downloadingSlug === slug
+                  ? <span className="pdf-spinner" />
+                  : <><Download size={11} /> PDF</>
+                }
+              </button>
             </Link>
           ))}
         </div>

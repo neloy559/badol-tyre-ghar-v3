@@ -1,11 +1,13 @@
-import { useState, useEffect } from 'react';
-import { NavLink, Outlet, Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
+import { NavLink, Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { Home, Grid3x3, ShoppingBag, User, Search } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import api from '../services/api';
 import FloatingCart from './organisms/FloatingCart';
+import { useSwipeNavigation, TAB_ROUTES } from '../hooks/useSwipeNavigation';
 import './Layout.css';
 
 const WhatsAppLogo = ({ size = 24 }) => (
@@ -15,14 +17,27 @@ const WhatsAppLogo = ({ size = 24 }) => (
 );
 
 export default function Layout() {
-  const navigate = useNavigate();
-  const { user } = useAuth();
+  const navigate  = useNavigate();
+  const location  = useLocation();
+  const { user }  = useAuth();
   const { cartCount } = useCart();
-  const [search, setSearch] = useState('');
-  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [search, setSearch]           = useState('');
+  const [isCartOpen, setIsCartOpen]   = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [deferredPrompt, setDeferredPrompt]   = useState(null);
+  const mainRef = useRef(null);
+
+  // ── Swipe Navigation ─────────────────────────────────────────
+  const { getCurrentTabIndex } = useSwipeNavigation(mainRef);
+  const currentTabIndex = getCurrentTabIndex();
+
+  // Track previous tab index for slide direction
+  const prevTabIndex = useRef(currentTabIndex);
+  const slideDirection = currentTabIndex >= prevTabIndex.current ? 1 : -1;
+  useEffect(() => {
+    prevTabIndex.current = currentTabIndex;
+  }, [currentTabIndex]);
   
   // ── Smart Search Memory ──────────────────────────────────────
   const [recentSearches, setRecentSearches] = useState(() => {
@@ -102,14 +117,7 @@ export default function Layout() {
 
   const navItems = [
     { to: '/',        icon: Home,        label: 'হোম' },
-    { to: '/catalog', icon: Grid3x3,     label: 'পণ্য' },
-    { 
-      href: `https://wa.me/${brandingData?.config?.contact?.whatsapp || import.meta.env.VITE_WHATSAPP_NUMBER || '8801647794452'}`, 
-      icon: WhatsAppLogo, 
-      label: 'WhatsApp', 
-      isExternal: true,
-      isCenter: true 
-    },
+    { to: '/catalog', icon: Grid3x3,     label: 'ক্যাটালগ' },
     { onClick: () => setIsCartOpen(true), icon: ShoppingBag, label: 'কোটেশন', count: cartCount },
     { to: '/profile', icon: User,        label: 'অ্যাকাউন্ট' },
   ];
@@ -229,8 +237,19 @@ export default function Layout() {
       </header>
 
       {/* ── Main Content ─────────────────────────────── */}
-      <main className="layout-main">
-        <Outlet />
+      <main className="layout-main" ref={mainRef}>
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={location.pathname}
+            initial={{ x: slideDirection * 60, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: slideDirection * -60, opacity: 0 }}
+            transition={{ duration: 0.22, ease: [0.25, 0.46, 0.45, 0.94] }}
+            style={{ width: '100%' }}
+          >
+            <Outlet />
+          </motion.div>
+        </AnimatePresence>
       </main>
 
       <FloatingCart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
@@ -295,22 +314,19 @@ export default function Layout() {
 
       {/* ── Mobile Bottom Navigation ──────────────────── */}
       <nav className="bottom-nav">
-        {navItems.map((item) => {
+        {/* Sliding active indicator */}
+        <div
+          className="bottom-nav-indicator"
+          style={{ transform: `translateX(${currentTabIndex * 100}%)` }}
+        />
+        {navItems.map((item, index) => {
           const Icon = item.icon;
-          if (item.isExternal) {
-            return (
-              <a
-                key={item.label}
-                href={item.href}
-                target="_blank"
-                rel="noreferrer"
-                className={`bottom-nav-item ${item.isCenter ? 'center-action' : ''}`}
-              >
-                <Icon size={item.isCenter ? 26 : 20} strokeWidth={item.isCenter ? 2.5 : 1.8} />
-                <span>{item.label}</span>
-              </a>
-            );
-          }
+          const isActive = !item.onClick && item.to && (
+            item.to === '/'
+              ? location.pathname === '/'
+              : location.pathname.startsWith(item.to)
+          );
+
           if (item.onClick) {
             return (
               <button
@@ -333,7 +349,9 @@ export default function Layout() {
               end={item.to === '/'}
               className={({ isActive }) => `bottom-nav-item${isActive ? ' active' : ''}`}
             >
-              <Icon size={20} strokeWidth={1.8} />
+              <div className="nav-icon-wrap">
+                <Icon size={20} strokeWidth={isActive ? 2.2 : 1.8} />
+              </div>
               <span>{item.label}</span>
             </NavLink>
           );
