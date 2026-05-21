@@ -43,7 +43,7 @@ export default function App() {
           <Route path="catalog/:slug" element={<Product />} />
           <Route path="shops"    element={<Shops />} />
           <Route path="login"    element={<Login />} />
-          <Route path="cart"     element={<ProtectedRoute><Cart /></ProtectedRoute>} />
+          <Route path="cart"     element={<Cart />} />
           <Route path="profile"  element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="admin/*"  element={<ProtectedRoute requireAdmin><Admin /></ProtectedRoute>} />
           <Route path="*"        element={<NotFound />} />

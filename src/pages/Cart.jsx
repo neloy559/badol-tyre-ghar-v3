@@ -13,6 +13,7 @@ export default function Cart() {
   const { data: cart, isLoading } = useQuery({
     queryKey: ['cart'],
     queryFn:  async () => (await api.get('/cart')).data.data,
+    enabled: !!user, // only fetch if logged in
   });
 
   const remove = useMutation({
@@ -43,6 +44,20 @@ export default function Cart() {
   };
 
   if (isLoading) return <div className="cart-skeleton" />;
+
+  // Guest state — not logged in
+  if (!user) {
+    return (
+      <div className="cart-root">
+        <h1 className="cart-title">Quote List</h1>
+        <div className="cart-empty">
+          <MessageCircle size={48} color="var(--color-text-muted)" />
+          <p>Login to save and send your quote list.</p>
+          <a href="/login" className="cart-browse-btn">Login / Register</a>
+        </div>
+      </div>
+    );
+  }
 
   const items = cart?.items || [];
 

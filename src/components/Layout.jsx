@@ -125,7 +125,7 @@ export default function Layout() {
       isExternal: true,
       isCenter: true,
     },
-    { onClick: () => setIsCartOpen(true), icon: ShoppingBag, label: 'কোটেশন', count: cartCount },
+    { to: '/cart',    icon: ShoppingBag, label: 'কোটেশন', count: cartCount },
     { to: '/profile', icon: User,        label: 'অ্যাকাউন্ট' },
   ];
 
