@@ -65,7 +65,7 @@ const Catalog = () => {
           categoryName={category ? category.replace(/-/g, ' ') : 'All Products'}
           whatsapp={import.meta.env.VITE_WHATSAPP_NUMBER || ''}
         />
-      ).blob();
+      ).toBlob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;

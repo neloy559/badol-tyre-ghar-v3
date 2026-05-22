@@ -76,7 +76,7 @@ export default function PdfManager() {
       const categoryName = CATEGORY_LABELS[categorySlug] || categorySlug;
       const blob = await pdf(
         <CatalogDocument products={products} categoryName={categoryName} whatsapp={whatsapp} />
-      ).blob();
+      ).toBlob();
 
       // 4. Upload to Cloudinary via admin upload endpoint
       const formData = new FormData();
