@@ -21,18 +21,17 @@ export default function Cart() {
   const buildWhatsAppMsg = () => {
     if (!items.length) return '#';
     const lines = [
-      `*Quote Request — Badol Tyre Ghar*`,
-      user ? `Name: ${user.profile?.name || user.phone}` : 'Guest Inquiry',
+      `*Badol Tyre Ghar — Quote Request*`,
+      user ? `Customer: ${user.profile?.name || user.phone}` : 'Guest Inquiry',
       ``,
       ...items.map((item, i) => {
         const p = item.product;
         const v = item.variant;
-        // BUG-007 fix: use pricing.retail || price
-        const price = v?.pricing?.retail || v?.pricing?.wholesale || v?.price;
-        return `${i + 1}. ${p?.name || '—'} | Size: ${p?.commonSpecs?.size || '—'} | Ply: ${v?.ply || '—'} | Qty: ${item.quantity}${price ? ` | ৳${price.toLocaleString()}` : ''}`;
+        // No prices — customer asks, owner replies manually
+        return `${i + 1}. ${p?.name || '—'} | Size: ${p?.commonSpecs?.size || '—'} | Ply: ${v?.ply || '—'} | Qty: ${item.quantity}`;
       }),
       ``,
-      `Please confirm availability and pricing. Thank you.`,
+      `দয়া করে এই পণ্যগুলোর দাম ও প্রাপ্যতা জানাবেন। ধন্যবাদ।`,
     ].join('\n');
     return `https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER}?text=${encodeURIComponent(lines)}`;
   };
@@ -119,9 +118,6 @@ export default function Cart() {
                     </div>
                   </div>
                   <div className="cart-item-right">
-                    {price && (
-                      <p className="cart-item-price">৳ {(price * item.quantity).toLocaleString()}</p>
-                    )}
                     <button
                       className="cart-item-remove"
                       onClick={() => removeFromCart(p._id, v?.sku)}
@@ -134,13 +130,7 @@ export default function Cart() {
             })}
           </div>
 
-          {/* Total */}
-          {cartTotal > 0 && (
-            <div className="cart-total-row">
-              <span>Estimated Total</span>
-              <span className="cart-total-amount">৳ {cartTotal.toLocaleString()}</span>
-            </div>
-          )}
+          {/* No price total shown — customer asks, owner replies manually */}
 
           <div className="cart-actions">
             <a

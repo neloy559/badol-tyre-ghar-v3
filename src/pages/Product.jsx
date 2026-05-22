@@ -123,15 +123,15 @@ export default function Product() {
   };
 
   const buildWhatsAppMsg = () => {
-    // BUG-007 fix: was using variant?.price (flat legacy). Schema uses pricing.retail.
-    const price = variant?.pricing?.retail || variant?.pricing?.wholesale || variant?.price;
+    // No price in message — customer asks, owner replies manually
     const lines = [
-      `*Inquiry from BTG V3*`,
+      `*Badol Tyre Ghar — Product Inquiry*`,
       `Product: ${product.name}`,
       `Size: ${product.commonSpecs?.size || '—'}`,
       variant?.ply         ? `Ply: ${variant.ply}` : '',
       variant?.designModel ? `Model: ${variant.designModel}` : '',
-      price ? `Price: ৳ ${price.toLocaleString()}` : '',
+      ``,
+      `দয়া করে এই পণ্যের দাম ও প্রাপ্যতা জানাবেন। ধন্যবাদ।`,
     ].filter(Boolean).join('\n');
     return `https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER}?text=${encodeURIComponent(lines)}`;
   };

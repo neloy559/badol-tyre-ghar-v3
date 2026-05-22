@@ -27,45 +27,30 @@ const FloatingCart = ({ isOpen, onClose }) => {
   const handleWhatsAppInquiry = async () => {
     const adminNumber = import.meta.env.VITE_WHATSAPP_NUMBER || '8801647794452';
 
-    // Build structured message with correct price fields
+    // No prices in message — customer asks, you reply manually
     const lines = [
       `*Badol Tyre Ghar — Quote Request*`,
       `Customer: ${user?.profile?.name || 'Guest'}${user?.phone ? ` (${user.phone})` : ''}`,
       ``,
       `*Items:*`,
-      ...items.map((item, i) => {
-        const price = item.variant?.pricing?.retail
-          || item.variant?.pricing?.wholesale
-          || item.variant?.price
-          || 0;
-        const lineTotal = price * item.quantity;
-        return `${i + 1}. ${item.product.name} | Size: ${item.product.commonSpecs?.size || '—'} | Ply: ${item.variant?.ply || '—'} | Qty: ${item.quantity}${lineTotal > 0 ? ` | ৳${lineTotal.toLocaleString()}` : ''}`;
-      }),
+      ...items.map((item, i) =>
+        `${i + 1}. ${item.product.name} | Size: ${item.product.commonSpecs?.size || '—'} | Ply: ${item.variant?.ply || '—'} | Qty: ${item.quantity}`
+      ),
       ``,
-      cartTotal > 0 ? `*Estimated Total:* ৳${cartTotal.toLocaleString()}` : '',
-      `Please confirm availability and final pricing. Thank you.`,
-    ].filter(Boolean).join('\n');
+      `দয়া করে এই পণ্যগুলোর দাম ও প্রাপ্যতা জানাবেন। ধন্যবাদ।`,
+    ].join('\n');
 
     try {
-      // Log inquiry to DB (optional — fails silently for guests)
       await api.post('/cart', {
         items: items.map(i => ({
           product:  i.product._id,
-          variant: {
-            sku:         i.variant?.sku,
-            ply:         i.variant?.ply,
-            designModel: i.variant?.designModel,
-            price:       i.variant?.pricing?.retail || i.variant?.price || 0,
-          },
+          variant: { sku: i.variant?.sku, ply: i.variant?.ply, designModel: i.variant?.designModel },
           quantity: i.quantity,
         })),
-        totalAmount: cartTotal,
+        totalAmount: 0,
       });
-    } catch {
-      // Guest or error — still open WhatsApp
-    }
+    } catch { /* guest or error — still open WhatsApp */ }
 
-    // Always open WhatsApp with the message
     window.open(`https://wa.me/${adminNumber}?text=${encodeURIComponent(lines)}`, '_blank');
   };
 
