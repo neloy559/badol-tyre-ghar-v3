@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { FileText, RefreshCw, CheckCircle, AlertCircle, Clock, BarChart2, Download, Loader2 } from 'lucide-react';
 import { pdf } from '@react-pdf/renderer';
 import api, { authApi } from '../../services/api';
-import CatalogDocument from '../../components/pdf/CatalogDocument';
+import CatalogDocument, { prefetchImages } from '../../components/pdf/CatalogDocument';
 import { logPdfDownload } from '../../hooks/usePdfCache';
 
 const STATUS_CONFIG = {
@@ -72,22 +72,33 @@ export default function PdfManager() {
         return;
       }
 
-      // 3. Generate PDF blob
+      // 3. Generate PDF blob with base64 images (bypasses CORS)
       const categoryName = CATEGORY_LABELS[categorySlug] || categorySlug;
+      const prodsWithImages = await prefetchImages(products);
+
+      // Fetch logo as base64
+      let logoBase64 = null;
+      try {
+        const logoRes = await fetch('/assets/branding/logo.jpeg');
+        if (logoRes.ok) {
+          const lb = await logoRes.blob();
+          logoBase64 = await new Promise(r => { const fr = new FileReader(); fr.onloadend = () => r(fr.result); fr.readAsDataURL(lb); });
+        }
+      } catch { /* logo optional */ }
+
       const blob = await pdf(
-        <CatalogDocument products={products} categoryName={categoryName} whatsapp={whatsapp} />
+        <CatalogDocument products={prodsWithImages} categoryName={categoryName} logoBase64={logoBase64} />
       ).toBlob();
 
-      // 4. Upload to Cloudinary via admin upload endpoint
-      const formData = new FormData();
-      formData.append('images', blob, `btg_catalog_${categorySlug}.pdf`);
-      formData.append('folder', 'btg/catalogs');
-      formData.append('resourceType', 'raw');
-
-      const uploadRes = await api.post('/admin/catalog/upload', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+      // 4. Convert blob to base64 and upload to Cloudinary via admin endpoint
+      const base64Pdf = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.readAsDataURL(blob);
       });
-      const pdfUrl = uploadRes.data?.data?.[0]?.url || uploadRes.data?.data?.url;
+
+      const uploadRes = await api.post('/admin/catalog/upload', { images: [base64Pdf] });
+      const pdfUrl = uploadRes.data?.data?.urls?.[0] || uploadRes.data?.data?.url;
 
       if (!pdfUrl) throw new Error('Upload failed — no URL returned');
 
