@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { ArrowRight, Truck, ShieldCheck, Grid3x3, Download } from 'lucide-react';
 import api, { authApi } from '../services/api';
@@ -11,16 +11,15 @@ import { useAuth } from '../context/AuthContext';
 import { pdf } from '@react-pdf/renderer';
 import CatalogDocument from '../components/pdf/CatalogDocument';
 import { usePdfCache, getCachedPdf, logPdfDownload } from '../hooks/usePdfCache';
+// BUG-001 fix: import must be at top of file, not after component declarations
+import { CATEGORIES, getCategoryLogo } from '../utils/constants';
 import './Home.css';
-
 
 const fetchFeatured = async () =>
   (await api.get('/products', { params: { limit: 12, page: 1 } })).data.data;
 
 const fetchByCategory = async (categorySlug) =>
   (await api.get('/products', { params: { category: categorySlug, limit: 6 } })).data.data;
-
-import { CATEGORIES, getCategoryLogo } from '../utils/constants';
 
 const TRUST = [
   { icon: <Truck size={16} />,        text: 'Nationwide Delivery' },
@@ -116,11 +115,8 @@ export default function Home() {
                 </a>
               </div>
               <p className="hero-tagline">PREMIUM · PERFORMANCE · TRUSTED</p>
-              {isAuthenticated && (
-                <a href="/catalog.pdf" download className="btn-hero-primary">
-                  ডাউনলোড ক্যাটালগ <ArrowRight size={15} />
-                </a>
-              )}
+              {/* BUG-002/003 fix: removed broken /catalog.pdf link (404) and
+                  duplicate btn-hero-primary that stacked for logged-in users */}
               <Link to="/catalog" className="btn-hero-primary">
                 Browse Catalog <ArrowRight size={15} />
               </Link>

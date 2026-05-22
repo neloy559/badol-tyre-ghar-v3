@@ -48,7 +48,7 @@ export default function Shops() {
     <div className="shops-root">
       <SEO 
         title="Our Branches" 
-        description="Find Badol Tyre Ghar branch locations across Bangladesh. Dhaka, Chittagong, Bogra, and Sylhet distribution hubs."
+        description="Visit Badol Tyre Ghar at Shapla Chattar, Station Road, and Thikadarpara Mor in Rangpur. Bangladesh's trusted tyre wholesale shop."
         url="/shops"
       />
       <div className="shops-header">

@@ -281,7 +281,7 @@ export default function Layout() {
           <div>
             <p className="footer-col-heading">Useful Links</p>
             <div className="footer-links">
-              <Link to="/contact"  className="footer-link">Contact Us</Link>
+              <Link to="/shops"   className="footer-link">Contact Us</Link>
               <Link to="/catalog"  className="footer-link">Browse Catalog</Link>
               <Link to="/login"    className="footer-link">Dealer Login</Link>
               {deferredPrompt && (
@@ -295,9 +295,9 @@ export default function Layout() {
           <div>
             <p className="footer-col-heading">Policy</p>
             <div className="footer-links">
-              <Link to="/" className="footer-link">Terms &amp; Conditions</Link>
-              <Link to="/" className="footer-link">Privacy Policy</Link>
-              <Link to="/" className="footer-link">Return Policy</Link>
+              <Link to="/shops" className="footer-link">Terms &amp; Conditions</Link>
+              <Link to="/shops" className="footer-link">Privacy Policy</Link>
+              <Link to="/shops" className="footer-link">Return Policy</Link>
             </div>
           </div>
 

@@ -179,14 +179,16 @@ exports.updateProduct = async (req, res) => {
       commonSpecs: commonSpecs || old.commonSpecs,
     };
 
+    // BUG-037 fix: was using truthy check (if name) which prevents clearing fields.
+    // Changed to undefined check so sending name:'' correctly clears the field.
     const updatePayload = {};
-    if (name)        updatePayload.name        = name;
-    if (sku)         updatePayload.sku         = sku;
-    if (brandId)     updatePayload.brand       = brandId;
-    if (categoryId)  updatePayload.category    = categoryId;
-    if (media)       updatePayload.media       = media;
-    if (commonSpecs) updatePayload.commonSpecs = commonSpecs;
-    if (variants)    updatePayload.variants    = variants;
+    if (name        !== undefined) updatePayload.name        = name;
+    if (sku         !== undefined) updatePayload.sku         = sku;
+    if (brandId)                   updatePayload.brand       = brandId;
+    if (categoryId)                updatePayload.category    = categoryId;
+    if (media       !== undefined) updatePayload.media       = media;
+    if (commonSpecs !== undefined) updatePayload.commonSpecs = commonSpecs;
+    if (variants    !== undefined) updatePayload.variants    = variants;
 
     updatePayload.customTags = customTagsParsed;
     updatePayload.searchTags = generateProductTags(mergedProduct, brandName, categoryName, customTagsParsed);
@@ -396,8 +398,13 @@ exports.exportProducts = async (req, res) => {
     res.setHeader('Content-Type', 'text/csv');
     res.setHeader('Content-Disposition', 'attachment; filename=btg_products.csv');
 
-    const header = Object.keys(rows[0] || {}).join(',');
-    const csvRows = rows.map((r) => 
+    // BUG-039 fix: rows[0] is undefined when catalog is empty — header was ''
+    if (rows.length === 0) {
+      return res.send('sku,name,brand,category,size,pattern,ply,designModel,retailPrice,wholesalePrice,stock\n');
+    }
+
+    const header = Object.keys(rows[0]).join(',');
+    const csvRows = rows.map((r) =>
       Object.values(r).map(v => `"${v?.toString().replace(/"/g, '""') || ''}"`).join(',')
     );
     res.send([header, ...csvRows].join('\n'));

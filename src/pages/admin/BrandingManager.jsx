@@ -159,9 +159,10 @@ export default function BrandingManager() {
                   </div>
                   <div className="banner-card-actions">
                     <div className="order-controls">
-                       <button onClick={() => updateBanner.mutate({ id: banner._id, payload: { order: banner.order - 1 } })}><MoveUp size={14}/></button>
-                       <button onClick={() => updateBanner.mutate({ id: banner._id, payload: { order: banner.order + 1 } })}><MoveDown size={14}/></button>
-                    </div>
+                     {/* BUG-026 fix: no bounds check — order could go negative */}
+                     <button onClick={() => updateBanner.mutate({ id: banner._id, payload: { order: Math.max(0, banner.order - 1) } })}><MoveUp size={14}/></button>
+                     <button onClick={() => updateBanner.mutate({ id: banner._id, payload: { order: banner.order + 1 } })}><MoveDown size={14}/></button>
+                  </div>
                     <button className="btn-delete" onClick={() => confirm('Delete banner?') && deleteBanner.mutate(banner._id)}>
                       <Trash2 size={16} />
                     </button>
