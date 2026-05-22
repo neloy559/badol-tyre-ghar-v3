@@ -60,7 +60,8 @@ export default function Home() {
         const url = URL.createObjectURL(cached.blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `BadolTyreGhar_${label.replace(/\s+/g, '')}.pdf`;
+        // Bug fix: always include date for consistent naming
+        a.download = `BadolTyreGhar_${label.replace(/\s+/g, '')}_${new Date().toISOString().slice(0,10)}.pdf`;
         a.click();
         URL.revokeObjectURL(url);
         logPdfDownload(slug, cached.versionHash, true);
