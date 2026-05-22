@@ -1,41 +1,35 @@
 import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Trash2, MessageCircle, CheckCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Trash2, MessageCircle, CheckCircle, ShoppingBag } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 import api from '../services/api';
 import './Cart.css';
 
+/**
+ * Cart page — reads from CartContext (localStorage-backed).
+ * BUG-008 fix: was reading from server API (/cart) which is a separate system
+ * from CartContext. Items added via Product page (CartContext) never appeared here.
+ * Now unified: CartContext is the single source of truth for the quote list.
+ */
 export default function Cart() {
   const { user } = useAuth();
-  const queryClient = useQueryClient();
+  const { items, removeFromCart, updateQuantity, clearCart, cartTotal } = useCart();
   const [confirmModal, setConfirmModal] = useState(false);
-
-  const { data: cart, isLoading } = useQuery({
-    queryKey: ['cart'],
-    queryFn:  async () => (await api.get('/cart')).data.data,
-    enabled: !!user, // only fetch if logged in
-  });
-
-  const remove = useMutation({
-    mutationFn: (payload) => api.delete('/cart/remove', { data: payload }),
-    onSuccess:  () => queryClient.invalidateQueries(['cart']),
-  });
-
-  const submit = useMutation({
-    mutationFn: () => api.post('/cart/submit'),
-    onSuccess:  () => { queryClient.invalidateQueries(['cart']); setConfirmModal(false); },
-  });
+  const [submitting, setSubmitting] = useState(false);
 
   const buildWhatsAppMsg = () => {
-    if (!cart?.items?.length) return '#';
+    if (!items.length) return '#';
     const lines = [
       `*Quote Request — Badol Tyre Ghar*`,
-      `Name: ${user?.profile?.name || user?.phone}`,
+      user ? `Name: ${user.profile?.name || user.phone}` : 'Guest Inquiry',
       ``,
-      ...cart.items.map((item, i) => {
-        const p = item.productId;
-        const v = p?.variants?.find((v) => v.sku === item.variantSku) || p?.variants?.[0];
-        return `${i + 1}. ${p?.name || '—'} | Size: ${p?.commonSpecs?.size || '—'} | Ply: ${v?.ply || '—'} | Qty: ${item.quantity}`;
+      ...items.map((item, i) => {
+        const p = item.product;
+        const v = item.variant;
+        // BUG-007 fix: use pricing.retail || price
+        const price = v?.pricing?.retail || v?.pricing?.wholesale || v?.price;
+        return `${i + 1}. ${p?.name || '—'} | Size: ${p?.commonSpecs?.size || '—'} | Ply: ${v?.ply || '—'} | Qty: ${item.quantity}${price ? ` | ৳${price.toLocaleString()}` : ''}`;
       }),
       ``,
       `Please confirm availability and pricing. Thank you.`,
@@ -43,9 +37,27 @@ export default function Cart() {
     return `https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER}?text=${encodeURIComponent(lines)}`;
   };
 
-  if (isLoading) return <div className="cart-skeleton" />;
+  const handleSubmitInquiry = async () => {
+    if (!user) return;
+    setSubmitting(true);
+    try {
+      await api.post('/cart/submit', {
+        items: items.map(item => ({
+          productId: item.product._id,
+          variantSku: item.variant?.sku,
+          quantity: item.quantity,
+        }))
+      });
+      clearCart();
+      setConfirmModal(false);
+    } catch (err) {
+      console.error('Submit inquiry error:', err);
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
-  // Guest state — not logged in
+  // Guest state
   if (!user) {
     return (
       <div className="cart-root">
@@ -53,13 +65,11 @@ export default function Cart() {
         <div className="cart-empty">
           <MessageCircle size={48} color="var(--color-text-muted)" />
           <p>Login to save and send your quote list.</p>
-          <a href="/login" className="cart-browse-btn">Login / Register</a>
+          <Link to="/login" className="cart-browse-btn">Login / Register</Link>
         </div>
       </div>
     );
   }
-
-  const items = cart?.items || [];
 
   return (
     <div className="cart-root">
@@ -67,33 +77,54 @@ export default function Cart() {
 
       {items.length === 0 ? (
         <div className="cart-empty">
-          <MessageCircle size={48} color="var(--color-text-muted)" />
+          <ShoppingBag size={48} color="var(--color-text-muted)" />
           <p>Your quote list is empty.</p>
-          <a href="/catalog" className="cart-browse-btn">Browse Catalog</a>
+          <Link to="/catalog" className="cart-browse-btn">Browse Catalog</Link>
         </div>
       ) : (
         <>
           <div className="cart-items">
             {items.map((item) => {
-              const p = item.productId;
-              const v = p?.variants?.find((v) => v.sku === item.variantSku) || p?.variants?.[0];
+              // BUG-009 fix: null guard — skip if product reference is missing
+              const p = item.product;
+              const v = item.variant;
+              if (!p) return null;
+
+              const price = v?.pricing?.retail || v?.pricing?.wholesale || v?.price;
+
               return (
-                <div key={`${item.productId?._id}-${item.variantSku}`} className="cart-item">
-                  {p?.media?.[0] && <img src={p.media[0]} alt={p.name} className="cart-item-img" />}
+                <div key={`${p._id}-${v?.sku}`} className="cart-item">
+                  {p.media?.[0] && (
+                    <img src={p.media[0]} alt={p.name} className="cart-item-img"
+                      onError={(e) => { e.target.style.display = 'none'; }}
+                    />
+                  )}
                   <div className="cart-item-info">
-                    <p className="cart-item-name">{p?.name || 'Unknown Product'}</p>
+                    <p className="cart-item-name">{p.name}</p>
                     <p className="cart-item-meta">
-                      {p?.commonSpecs?.size}
+                      {p.commonSpecs?.size}
                       {v?.ply && ` · ${v.ply}`}
                       {v?.designModel && ` · ${v.designModel}`}
                     </p>
-                    <p className="cart-item-qty">Qty: {item.quantity}</p>
+                    <div className="cart-item-qty-row">
+                      <button
+                        className="cart-qty-btn"
+                        onClick={() => updateQuantity(p._id, v?.sku, -1)}
+                      >−</button>
+                      <span className="cart-item-qty">{item.quantity}</span>
+                      <button
+                        className="cart-qty-btn"
+                        onClick={() => updateQuantity(p._id, v?.sku, 1)}
+                      >+</button>
+                    </div>
                   </div>
                   <div className="cart-item-right">
-                    {v?.price && <p className="cart-item-price">৳ {v.price.toLocaleString()}</p>}
+                    {price && (
+                      <p className="cart-item-price">৳ {(price * item.quantity).toLocaleString()}</p>
+                    )}
                     <button
                       className="cart-item-remove"
-                      onClick={() => remove.mutate({ productId: p._id, variantSku: item.variantSku })}
+                      onClick={() => removeFromCart(p._id, v?.sku)}
                     >
                       <Trash2 size={15} />
                     </button>
@@ -103,13 +134,21 @@ export default function Cart() {
             })}
           </div>
 
+          {/* Total */}
+          {cartTotal > 0 && (
+            <div className="cart-total-row">
+              <span>Estimated Total</span>
+              <span className="cart-total-amount">৳ {cartTotal.toLocaleString()}</span>
+            </div>
+          )}
+
           <div className="cart-actions">
             <a
               href={buildWhatsAppMsg()}
               target="_blank"
               rel="noreferrer"
               className="cart-whatsapp-btn"
-              onClick={() => setTimeout(() => setConfirmModal(true), 1500)}
+              onClick={() => { if (user) setTimeout(() => setConfirmModal(true), 1500); }}
             >
               <MessageCircle size={20} />
               Send Inquiry via WhatsApp
@@ -124,10 +163,14 @@ export default function Cart() {
           <div className="confirm-modal" onClick={(e) => e.stopPropagation()}>
             <CheckCircle size={40} color="var(--color-success)" />
             <h2>Did you send the inquiry?</h2>
-            <p>Confirm so we can prepare your quote faster.</p>
+            <p>Confirm so we can track your request and respond faster.</p>
             <div className="confirm-actions">
-              <button className="btn-yes" onClick={() => submit.mutate()} disabled={submit.isPending}>
-                {submit.isPending ? 'Submitting...' : 'Yes, I sent it'}
+              <button
+                className="btn-yes"
+                onClick={handleSubmitInquiry}
+                disabled={submitting}
+              >
+                {submitting ? 'Submitting...' : 'Yes, I sent it'}
               </button>
               <button className="btn-no" onClick={() => setConfirmModal(false)}>Not yet</button>
             </div>

@@ -59,26 +59,57 @@ api.interceptors.request.use(
 );
 
 // ── Response Interceptor (The Magic) ───────────────────────────
+// Refresh mutex — prevents multiple concurrent 401s from each calling
+// onRefresh() simultaneously, which would rotate the token multiple times
+// and cause the second/third calls to get 401 from /auth/refresh,
+// triggering onLogout() even though the first refresh succeeded.
+let isRefreshing = false;
+let refreshQueue = []; // pending requests waiting for the new token
+
+const processQueue = (error, token = null) => {
+  refreshQueue.forEach(({ resolve, reject }) => {
+    if (error) reject(error);
+    else resolve(token);
+  });
+  refreshQueue = [];
+};
+
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    // If 401 and not already retrying
-    // Note: We don't need isAuthPath check here anymore because auth calls 
-    // use 'authApi' which doesn't have this interceptor!
     if (error.response?.status === 401 && !originalRequest._retry) {
+      if (isRefreshing) {
+        // Another refresh is already in flight — queue this request
+        return new Promise((resolve, reject) => {
+          refreshQueue.push({ resolve, reject });
+        }).then((token) => {
+          originalRequest.headers.Authorization = `Bearer ${token}`;
+          return api(originalRequest);
+        }).catch((err) => Promise.reject(err));
+      }
+
       originalRequest._retry = true;
+      isRefreshing = true;
 
       try {
         const newToken = await authHandlers.onRefresh();
         if (newToken) {
+          processQueue(null, newToken);
           originalRequest.headers.Authorization = `Bearer ${newToken}`;
           return api(originalRequest);
+        } else {
+          processQueue(new Error('Refresh returned null'));
+          authHandlers.onLogout();
+          return Promise.reject(error);
         }
       } catch (refreshError) {
+        processQueue(refreshError);
         authHandlers.onLogout();
         return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
       }
     }
 

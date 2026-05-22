@@ -4,8 +4,14 @@ const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [items, setItems] = useState(() => {
-    const saved = localStorage.getItem('btg_cart');
-    return saved ? JSON.parse(saved) : [];
+    // BUG-017 fix: wrap in try/catch — corrupted localStorage JSON crashes the app
+    try {
+      const saved = localStorage.getItem('btg_cart');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      localStorage.removeItem('btg_cart'); // clear corrupted data
+      return [];
+    }
   });
 
   // Persist to localStorage
@@ -50,7 +56,14 @@ export const CartProvider = ({ children }) => {
   const clearCart = () => setItems([]);
 
   const cartCount = items.reduce((acc, item) => acc + item.quantity, 0);
-  const cartTotal = items.reduce((acc, item) => acc + (item.variant.price * item.quantity), 0);
+  // BUG-018 fix: use pricing.retail || pricing.wholesale || price (flat legacy)
+  const cartTotal = items.reduce((acc, item) => {
+    const price = item.variant?.pricing?.retail
+      || item.variant?.pricing?.wholesale
+      || item.variant?.price
+      || 0;
+    return acc + (price * item.quantity);
+  }, 0);
 
   const value = {
     items,
