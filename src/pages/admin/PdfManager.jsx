@@ -253,20 +253,20 @@ export default function PdfManager() {
                             : <><RefreshCw size={12} /> Regenerate</>
                           }
                         </button>
-                        {m.pdfUrl && (
-                          <a
-                            href={m.pdfUrl}
-                            target="_blank"
-                            rel="noreferrer"
+                        {m.status === 'ready' && (
+                          <button
+                            onClick={() => handleGenerate(m.categorySlug)}
+                            disabled={!!generatingSlug}
                             style={{
                               display: 'inline-flex', alignItems: 'center', gap: '4px',
                               padding: '4px 10px', borderRadius: '6px',
                               border: '1px solid #BBF7D0', color: '#16a34a',
-                              fontSize: '11px', fontWeight: 600, textDecoration: 'none',
+                              background: '#f0fdf4',
+                              fontSize: '11px', fontWeight: 600, cursor: 'pointer',
                             }}
                           >
-                            <Download size={12} /> View
-                          </a>
+                            <Download size={12} /> Preview
+                          </button>
                         )}
                       </div>
                     </td>
