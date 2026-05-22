@@ -1,7 +1,19 @@
 const { ActivityLog } = require('../modules/ops/models');
 
 module.exports = (req, res, next) => {
-  if (req.path === '/health' || req.path.startsWith('/static')) return next();
+  // BUG-045 fix: was logging every request including high-frequency suggestion
+  // endpoint (fires on every keystroke). Exclude noisy read-only endpoints.
+  const skipPaths = [
+    '/health',
+    '/catalog/search/suggestions',
+    '/catalog/categories',
+    '/catalog/brands',
+  ];
+  const shouldSkip = skipPaths.some(p => req.path.includes(p))
+    || req.path.startsWith('/static')
+    || req.method === 'GET'; // Only log mutations (POST/PATCH/DELETE)
+
+  if (shouldSkip) return next();
 
   try {
     ActivityLog.create({

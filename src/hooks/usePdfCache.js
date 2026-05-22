@@ -102,7 +102,8 @@ export const usePdfCache = (isDealer) => {
           return local;
         }
 
-        // Hash changed or not cached — fetch and cache silently
+        // BUG-020 fix: if fetch fails, catch block returned undefined which got
+        // written into the manifest array, corrupting it. Now returns local || entry.
         try {
           const response = await fetch(entry.pdfUrl);
           if (response.ok) {
@@ -111,6 +112,7 @@ export const usePdfCache = (isDealer) => {
           }
         } catch (err) {
           console.warn(`[BTG PDF Cache] Failed to cache ${entry.categorySlug}:`, err);
+          return local || entry; // BUG-020 fix: never return undefined
         }
 
         return entry;

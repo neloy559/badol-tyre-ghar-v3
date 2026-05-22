@@ -82,7 +82,16 @@ const DealerQueue = () => {
                     onChange={(e) => setMultiplier({ ...multiplier, [d._id]: e.target.value })}
                   />
                   <button 
-                    onClick={() => updateDiscount.mutate({ id: d._id, multiplier: multiplier[d._id] })}
+                    onClick={() => {
+                      // BUG-027 fix: multiplier[d._id] could be undefined if admin
+                      // never changed the input — sends NaN to backend.
+                      const val = multiplier[d._id];
+                      if (val === undefined || val === '') {
+                        alert('Please enter a multiplier value first.');
+                        return;
+                      }
+                      updateDiscount.mutate({ id: d._id, multiplier: val });
+                    }}
                     disabled={updateDiscount.isPending}
                   >
                     Set

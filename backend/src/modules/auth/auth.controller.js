@@ -39,10 +39,12 @@ const issueTokens = async (res, userId, req) => {
   });
 
   // Set Refresh Token in HttpOnly Cookie
+  // BUG-042 fix: secure: true always breaks login in local dev over HTTP.
+  // Only set secure in production.
   res.cookie('btg_refresh_token', refreshToken, {
     httpOnly: true,
-    secure:   true, // Always true for SameSite: none
-    sameSite: 'none',
+    secure:   process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     maxAge:   7 * 24 * 60 * 60 * 1000,
   });
 
@@ -146,8 +148,8 @@ exports.logout = async (req, res) => {
     }
     res.clearCookie('btg_refresh_token', {
       httpOnly: true,
-      secure:   true,
-      sameSite: 'none',
+      secure:   process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     });
     sendSuccess(res, 200, 'Logged out successfully.');
   } catch (err) {

@@ -14,10 +14,9 @@ exports.protect = async (req, res, next) => {
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
       token = req.headers.authorization.split(' ')[1];
     } 
-    // 2. Fallback to Cookie (for certain legacy or SSR routes)
-    else if (req.cookies?.btg_token) {
-      token = req.cookies.btg_token;
-    }
+    // 2. Fallback to Cookie — BUG-043 fix: was checking btg_token but
+    // issueTokens sets btg_refresh_token. This was dead code. Removed.
+    // The refresh token cookie is only used by /auth/refresh endpoint directly.
 
     if (!token) {
       return sendError(res, 401, 'Not authenticated. Please log in.');

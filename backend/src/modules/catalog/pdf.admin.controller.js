@@ -41,7 +41,8 @@ exports.getManifest = async (req, res) => {
   try {
     const manifests = await PdfManifest.find({}).sort({ categorySlug: 1 }).lean();
 
-    // Ensure all categories have a manifest entry
+    // BUG-040 fix: was using recursion to re-fetch after insert — risk of double
+    // response headers if insertMany partially fails. Now uses a direct re-query.
     const allSlugs = [...Object.keys(CATEGORY_LABELS)];
     const existingSlugs = manifests.map(m => m.categorySlug);
     const missing = allSlugs.filter(s => !existingSlugs.includes(s));
@@ -52,9 +53,13 @@ exports.getManifest = async (req, res) => {
           categorySlug: slug,
           categoryLabel: CATEGORY_LABELS[slug],
           status: 'pending',
-        }))
-      );
-      return exports.getManifest(req, res); // re-fetch after insert
+        })),
+        { ordered: false } // don't fail if some already exist (race condition)
+      ).catch(() => {}); // swallow duplicate key errors
+
+      // Re-query instead of recursing
+      const refreshed = await PdfManifest.find({}).sort({ categorySlug: 1 }).lean();
+      return sendSuccess(res, 200, 'PDF manifest fetched.', refreshed);
     }
 
     sendSuccess(res, 200, 'PDF manifest fetched.', manifests);

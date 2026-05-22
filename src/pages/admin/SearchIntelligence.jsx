@@ -179,6 +179,19 @@ const SearchIntelligence = () => {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['search-intelligence'] }),
   });
 
+  // BUG-031 fix: was using deleteMutation.isPending which dims ALL rows.
+  // Track the specific id being deleted instead.
+  const [deletingId, setDeletingId] = useState(null);
+
+  const handleDelete = async (id) => {
+    setDeletingId(id);
+    try {
+      await deleteMutation.mutateAsync(id);
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
   const clearAssignedMutation = useMutation({
     mutationFn: () => api.delete('/admin/search-intelligence/bulk-clear'),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['search-intelligence'] }),
@@ -266,7 +279,7 @@ const SearchIntelligence = () => {
             ) : logs.length === 0 ? (
               <tr><td colSpan="6" style={{ textAlign: 'center', padding: '30px', color: 'var(--color-text-muted)' }}>No search logs found.</td></tr>
             ) : logs.map(log => (
-              <tr key={log._id} style={{ opacity: deleteMutation.isPending ? 0.6 : 1 }}>
+              <tr key={log._id} style={{ opacity: deletingId === log._id ? 0.4 : 1 }}>
                 <td>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <code style={{ background: '#f8f9fa', padding: '2px 8px', borderRadius: '4px', fontSize: '13px', fontWeight: 600 }}>
@@ -312,7 +325,7 @@ const SearchIntelligence = () => {
                       </button>
                     )}
                     <button
-                      onClick={() => deleteMutation.mutate(log._id)}
+                      onClick={() => handleDelete(log._id)}
                       style={{ background: 'none', border: '1px solid #fecaca', borderRadius: '6px', padding: '4px 8px', cursor: 'pointer', color: '#dc2626', display: 'flex', alignItems: 'center' }}
                       title="Delete this log"
                     >
