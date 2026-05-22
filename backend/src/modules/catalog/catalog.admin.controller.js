@@ -328,21 +328,37 @@ exports.bulkMarkup = async (req, res) => {
     if (filter.brand)    dbFilter.brand    = filter.brand;
     if (filter.category) dbFilter.category = filter.category;
 
-    const products = await Product.find(dbFilter);
-    let updatedCount = 0;
+    // BUG-038 fix: was using sequential for-loop with p.save() — times out on Vercel
+    // for large catalogs. Now uses bulkWrite for a single DB round-trip.
+    const products = await Product.find(dbFilter).select('_id variants').lean();
+    if (products.length === 0) {
+      return sendSuccess(res, 200, 'No products matched the filter.', { updatedCount: 0 });
+    }
 
-    for (const p of products) {
-      p.variants = p.variants.map((v) => {
-        const base = v.pricing[priceField] || 0;
+    const ops = products.map((p) => {
+      const updatedVariants = p.variants.map((v) => {
+        const base = v.pricing?.[priceField] || 0;
         const newPrice = type === 'percentage'
           ? Math.round(base + (base * value / 100))
           : Math.round(base + value);
-        v.pricing[priceField] = Math.max(0, newPrice);
-        return v;
+        return {
+          ...v,
+          pricing: {
+            ...v.pricing,
+            [priceField]: Math.max(0, newPrice),
+          },
+        };
       });
-      await p.save();
-      updatedCount++;
-    }
+      return {
+        updateOne: {
+          filter: { _id: p._id },
+          update: { $set: { variants: updatedVariants } },
+        },
+      };
+    });
+
+    const result = await Product.bulkWrite(ops, { ordered: false });
+    const updatedCount = result.modifiedCount;
 
     await audit(req.user._id, 'BULK_MARKUP', null, filter, { type, value, priceField, updatedCount });
     sendSuccess(res, 200, `Bulk markup applied to ${updatedCount} products.`, { updatedCount });

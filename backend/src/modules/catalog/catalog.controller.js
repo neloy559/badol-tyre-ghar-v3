@@ -47,13 +47,26 @@ const buildCategoryTree = (categories, parentId = null) => {
   return tree;
 };
 
+// ── Campaign Cache (BUG-035 fix) ──────────────────────────────
+// Caches active campaigns in memory for 60 seconds to avoid a DB
+// query on every single product list request.
+let _campaignCache = null;
+let _campaignCacheAt = 0;
+const CAMPAIGN_TTL_MS = 60 * 1000;
+
 const getActiveCampaigns = async () => {
-  const now = new Date();
-  return Campaign.find({
+  const now = Date.now();
+  if (_campaignCache && (now - _campaignCacheAt) < CAMPAIGN_TTL_MS) {
+    return _campaignCache;
+  }
+  const campaigns = await Campaign.find({
     isActive: true,
-    startDate: { $lte: now },
-    endDate:   { $gte: now }
+    startDate: { $lte: new Date(now) },
+    endDate:   { $gte: new Date(now) }
   }).sort({ value: -1 }).lean();
+  _campaignCache   = campaigns;
+  _campaignCacheAt = now;
+  return campaigns;
 };
 
 const matchActiveCampaign = (product, activeCampaigns) => {
@@ -109,29 +122,33 @@ exports.getProducts = async (req, res) => {
       filter.$text = { $search: normalized };
     }
 
-    // 2. Multi-Category Filter
-    if (category) {
-      const slugs = category.split(',');
-      const cats = await Category.find({ slug: { $in: slugs } }).select('_id').lean();
-      filter.category = { $in: cats.map(c => c._id) };
-    }
+    // 2. Multi-Category Filter — BUG-034 fix: run in parallel with brand lookup
+    let categoryIds, brandIds;
+    [categoryIds, brandIds] = await Promise.all([
+      category
+        ? Category.find({ slug: { $in: category.split(',') } }).select('_id').lean().then(r => r.map(c => c._id))
+        : Promise.resolve(null),
+      brand
+        ? Brand.find({ slug: { $in: brand.split(',') } }).select('_id').lean().then(r => r.map(b => b._id))
+        : Promise.resolve(null),
+    ]);
 
-    // 3. Multi-Brand Filter
-    if (brand) {
-      const slugs = brand.split(',');
-      const brs = await Brand.find({ slug: { $in: slugs } }).select('_id').lean();
-      filter.brand = { $in: brs.map(b => b._id) };
-    }
+    if (categoryIds) filter.category = { $in: categoryIds };
+    if (brandIds)    filter.brand    = { $in: brandIds };
 
     // 4. Specific Spec Filters
     if (size)    filter['commonSpecs.size'] = { $regex: size, $options: 'i' };
     if (segment) filter.segment = segment;
 
-    // 5. Price Range Filter
+    // 5. Price Range Filter — BUG-033 fix: was querying non-existent 'basePrice' field.
+    // Prices live in variants[].pricing.retail. Use $elemMatch to filter correctly.
     if (minPrice || maxPrice) {
-      filter.basePrice = {};
-      if (minPrice) filter.basePrice.$gte = parseFloat(minPrice);
-      if (maxPrice) filter.basePrice.$lte = parseFloat(maxPrice);
+      const priceCondition = {};
+      if (minPrice) priceCondition.$gte = parseFloat(minPrice);
+      if (maxPrice) priceCondition.$lte = parseFloat(maxPrice);
+      filter.variants = {
+        $elemMatch: { 'pricing.retail': priceCondition }
+      };
     }
 
     const skip  = (page - 1) * limit;
@@ -226,7 +243,7 @@ exports.getProduct = async (req, res) => {
       campaign: campaign ? { name: campaign.name, badgeText: campaign.badgeText } : null,
     });
   } catch (err) {
-    console.error('❌ Error in getProducts:', err);
+    console.error('❌ Error in getProduct:', err);
     sendError(res, 500, err.message);
   }
 };
@@ -303,7 +320,7 @@ exports.getSuggestions = async (req, res) => {
 
     sendSuccess(res, 200, 'Suggestions fetched.', suggestions);
   } catch (err) {
-    console.error('❌ Error in getProducts:', err);
+    console.error('❌ Error in getSuggestions:', err);
     sendError(res, 500, err.message);
   }
 };
@@ -316,7 +333,7 @@ exports.getBrands = async (req, res) => {
     const brands = await Brand.find({ isActive: true }).sort({ name: 1 }).lean();
     sendSuccess(res, 200, 'Brands fetched.', brands);
   } catch (err) {
-    console.error('❌ Error in getProducts:', err);
+    console.error('❌ Error in getBrands:', err);
     sendError(res, 500, err.message);
   }
 };
