@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ShoppingBag, CheckCircle, MessageCircle, ChevronLeft, ChevronRight, MapPin, Wrench, ShieldCheck } from 'lucide-react';
@@ -124,11 +124,36 @@ export default function Product() {
 
   const buildWhatsAppMsg = () => {
     // No price in message — customer asks, owner replies manually
+    const catSlug = product.category?.slug || '';
+    const cs = product.categorySpecs || {};
+
+    // Build category-specific key specs for the message
+    const specLines = [];
+    if (catSlug.includes('tyre') || catSlug.includes('tube') || catSlug.includes('flap')) {
+      if (product.commonSpecs?.size) specLines.push(`Size: ${product.commonSpecs.size}`);
+      if (product.commonSpecs?.pattern) specLines.push(`Pattern: ${product.commonSpecs.pattern}`);
+      if (variant?.ply || cs.plyRating) specLines.push(`PLY: ${variant?.ply || cs.plyRating}`);
+      if (cs.rimSize) specLines.push(`Rim: ${cs.rimSize}`);
+      if (cs.vehicleType) specLines.push(`Vehicle: ${cs.vehicleType}`);
+    } else if (catSlug.includes('sealant')) {
+      if (cs.volume) specLines.push(`Volume: ${cs.volume}`);
+      if (cs.formulaType) specLines.push(`Formula: ${cs.formulaType}`);
+      if (cs.compatibleWith) specLines.push(`Compatible: ${cs.compatibleWith}`);
+    } else if (catSlug.includes('patch')) {
+      if (product.commonSpecs?.size) specLines.push(`Size: ${product.commonSpecs.size}`);
+      if (cs.patchType) specLines.push(`Type: ${cs.patchType}`);
+    } else if (catSlug.includes('gadget')) {
+      if (cs.gadgetType) specLines.push(`Type: ${cs.gadgetType}`);
+      if (cs.material) specLines.push(`Material: ${cs.material}`);
+    } else {
+      if (product.commonSpecs?.size) specLines.push(`Size: ${product.commonSpecs.size}`);
+      if (variant?.ply) specLines.push(`PLY: ${variant.ply}`);
+    }
+
     const lines = [
       `*Badol Tyre Ghar — Product Inquiry*`,
       `Product: ${product.name}`,
-      `Size: ${product.commonSpecs?.size || '—'}`,
-      variant?.ply         ? `Ply: ${variant.ply}` : '',
+      ...specLines,
       variant?.designModel ? `Model: ${variant.designModel}` : '',
       ``,
       `দয়া করে এই পণ্যের দাম ও প্রাপ্যতা জানাবেন। ধন্যবাদ।`,
@@ -356,21 +381,8 @@ export default function Product() {
           </a>
         </div>
 
-        {/* Specs */}
-        <div className="product-specs">
-          {[
-            ['Segment', product.segment],
-            ['Packing', product.packingSize],
-            ['Origin', product.commonSpecs?.origin],
-            ['Rim', product.commonSpecs?.rim],
-            ['Pattern', product.commonSpecs?.pattern],
-          ].filter(([, v]) => v).map(([k, v]) => (
-            <div key={k} className="product-spec-row">
-              <span className="spec-key">{k}</span>
-              <span className="spec-val">{v}</span>
-            </div>
-          ))}
-        </div>
+        {/* ── Specifications (Amazon-style grouped) ── */}
+        <CategorySpecsSection product={product} variant={variant} />
 
         {/* Related Products */}
         {product.relatedProducts?.length > 0 && (
@@ -452,6 +464,137 @@ export default function Product() {
         </div>
       )}
 
+    </div>
+  );
+}
+
+
+/**
+ * CategorySpecsSection — Amazon-style grouped specifications.
+ * Each category shows ONLY its relevant fields.
+ * KEY RULE: Tubes and Flaps do NOT have PLY Rating — they are pure rubber with no structural plies.
+ * PLY Rating applies to Tyres only.
+ */
+function CategorySpecsSection({ product, variant }) {
+  const catSlug = product.category?.slug || '';
+  const cs      = product.categorySpecs || {};
+  const custom  = product.customSpecs   || [];
+  const groups  = [];
+
+  if (catSlug === 'tyres') {
+    // Tyres: PLY Rating APPLIES here
+    const physical = [
+      ['Size',       product.commonSpecs?.size],
+      ['Pattern',    product.commonSpecs?.pattern || cs.pattern],
+      ['PLY Rating', variant?.ply || cs.plyRating],
+      ['Rim Size',   product.commonSpecs?.rim || cs.rimSize],
+      ['Origin',     product.commonSpecs?.origin],
+    ].filter(([, v]) => v);
+    const compat = [
+      ['Vehicle Type', cs.vehicleType],
+      ['Segment',      product.segment],
+      ['Packing',      product.packingSize],
+    ].filter(([, v]) => v);
+    if (physical.length) groups.push({ title: 'Physical Specifications', rows: physical });
+    if (compat.length)   groups.push({ title: 'Compatibility',           rows: compat });
+
+  } else if (catSlug === 'tubes') {
+    // Tubes: NO PLY Rating — pure butyl/natural rubber, no structural plies
+    const physical = [
+      ['Size',      product.commonSpecs?.size],
+      ['Valve Type', cs.valveType],
+      ['Material',   cs.tubeMaterial],
+      ['Origin',     product.commonSpecs?.origin],
+    ].filter(([, v]) => v);
+    const compat = [
+      ['Rim Size',     cs.rimSize || product.commonSpecs?.rim],
+      ['Vehicle Type', cs.vehicleType],
+      ['Packing',      product.packingSize],
+    ].filter(([, v]) => v);
+    if (physical.length) groups.push({ title: 'Physical Specifications', rows: physical });
+    if (compat.length)   groups.push({ title: 'Compatibility',           rows: compat });
+
+  } else if (catSlug === 'flaps') {
+    // Flaps: NO PLY Rating — rubber/plastic strip, no structural plies
+    const physical = [
+      ['Size',     product.commonSpecs?.size],
+      ['Material', cs.flapMaterial],
+      ['Origin',   product.commonSpecs?.origin],
+    ].filter(([, v]) => v);
+    const compat = [
+      ['Rim Size',     cs.rimSize || product.commonSpecs?.rim],
+      ['Vehicle Type', cs.vehicleType],
+      ['Packing',      product.packingSize],
+    ].filter(([, v]) => v);
+    if (physical.length) groups.push({ title: 'Physical Specifications', rows: physical });
+    if (compat.length)   groups.push({ title: 'Compatibility',           rows: compat });
+
+  } else if (catSlug === 'tyre-sealants') {
+    const rows = [
+      ['Volume',          cs.volume],
+      ['Formula Type',    cs.formulaType],
+      ['Compatible With', cs.compatibleWith],
+      ['Application',     cs.application],
+      ['Segment',         product.segment],
+      ['Packing',         product.packingSize],
+    ].filter(([, v]) => v);
+    if (rows.length) groups.push({ title: 'Product Specifications', rows });
+
+  } else if (catSlug === 'patches') {
+    const rows = [
+      ['Size',            product.commonSpecs?.size],
+      ['Patch Type',      cs.patchType],
+      ['Compatible With', cs.compatibleWith],
+      ['Segment',         product.segment],
+      ['Packing',         product.packingSize],
+    ].filter(([, v]) => v);
+    if (rows.length) groups.push({ title: 'Product Specifications', rows });
+
+  } else if (catSlug === 'gadgets') {
+    const rows = [
+      ['Type',            cs.gadgetType],
+      ['Material',        cs.material],
+      ['Compatible With', cs.compatibleWith],
+      ['Segment',         product.segment],
+      ['Packing',         product.packingSize],
+    ].filter(([, v]) => v);
+    if (rows.length) groups.push({ title: 'Product Specifications', rows });
+
+  } else {
+    // Generic fallback
+    const rows = [
+      ['Size',    product.commonSpecs?.size],
+      ['Pattern', product.commonSpecs?.pattern],
+      ['Rim',     product.commonSpecs?.rim],
+      ['Origin',  product.commonSpecs?.origin],
+      ['Segment', product.segment],
+      ['Packing', product.packingSize],
+    ].filter(([, v]) => v);
+    if (rows.length) groups.push({ title: 'Specifications', rows });
+  }
+
+  // Custom specs always in their own group
+  if (custom.length > 0) {
+    groups.push({ title: 'Additional Details', rows: custom.map(s => [s.key, s.value]) });
+  }
+
+  if (groups.length === 0) return null;
+
+  return (
+    <div className="product-spec-groups">
+      {groups.map((group) => (
+        <div key={group.title} className="product-spec-group">
+          <h3 className="spec-group-title">{group.title}</h3>
+          <div className="product-specs">
+            {group.rows.map(([k, v]) => (
+              <div key={k} className="product-spec-row">
+                <span className="spec-key">{k}</span>
+                <span className="spec-val">{v}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

@@ -34,6 +34,40 @@ const ProductSchema = new Schema({
   },
   searchTags: { type: [String], default: [] }, // Custom and auto-generated search aliases
   customTags: { type: [String], default: [] }, // Manually typed tags (for Tags Manager UI)
+
+  // ── Category-Specific Specs ────────────────────────────────
+  // Structured fields for known categories (Tyres, Tubes, Flaps, Sealants, Patches, Gadgets)
+  categorySpecs: {
+    // Tyres only
+    plyRating:    String, // e.g. '6PR', '8PR', '14PR' — Tyres ONLY (tubes/flaps have no ply)
+    pattern:      String, // e.g. 'Rib', 'Block', 'Knobby' — Tyres only
+    // Tyres + Tubes + Flaps
+    rimSize:      String, // e.g. '17"', '16"'
+    vehicleType:  String, // e.g. 'Motorcycle', 'CNG', 'Truck'
+    // Tubes only
+    valveType:    String, // e.g. 'Dunlop', 'Schrader', 'Woods'
+    tubeMaterial: String, // e.g. 'Butyl Rubber', 'Natural Rubber'
+    // Flaps only
+    flapMaterial: String, // e.g. 'Rubber', 'Rubber/Plastic Blend'
+    // Tyre Sealants
+    volume:         String, // e.g. '500ml', '1000ml', '1100ml', '800ml'
+    formulaType:    String, // e.g. 'Latex', 'Synthetic Polymer'
+    compatibleWith: String, // e.g. 'Tubeless', 'Tube-type', 'Both'
+    application:    String, // e.g. 'Motorcycle', 'Car', 'Truck'
+    // Patches
+    patchType:    String, // e.g. 'Cold Patch', 'Hot Patch', 'Sheet'
+    // Gadgets
+    gadgetType:   String, // e.g. 'Air Pressure Meter', 'Nozzle', 'Repair Kit'
+    material:     String, // e.g. 'Steel', 'Plastic', 'Rubber'
+  },
+
+  // Flexible custom specs — admin can add any key-value pair
+  // e.g. [{ key: 'Thread Count', value: '120 TPI' }]
+  customSpecs: [{
+    key:   { type: String, required: true },
+    value: { type: String, required: true },
+  }],
+
   isVisible:  { type: Boolean, default: true  }, // Show/Hide on public site
   showPrice:  { type: Boolean, default: true  }, // Show/Hide pricing on public site
   isDeleted: { type: Boolean, default: false }, // Soft Delete
