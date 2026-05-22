@@ -27,12 +27,18 @@ exports.uploadImage = async (req, res) => {
     const uploadPromises = imagesToUpload.map((dataUri) => {
       // Detect if it's a PDF (data:application/pdf or data:application/octet-stream)
       const isPdf = dataUri.startsWith('data:application/pdf') || dataUri.includes('application/pdf');
-      return cloudinary.uploader.upload(dataUri, {
+      const uploadOptions = {
         folder: isPdf ? 'btg_v3_catalogs' : 'btg_v3_products',
         resource_type: isPdf ? 'raw' : 'image',
         access_mode: 'public',
         type: 'upload',
-      });
+      };
+      // For PDFs: add .pdf extension to public_id so Cloudinary serves with correct MIME type
+      if (isPdf) {
+        uploadOptions.format = 'pdf';
+        uploadOptions.public_id = `btg_catalog_${Date.now()}`;
+      }
+      return cloudinary.uploader.upload(dataUri, uploadOptions);
     });
 
     const results = await Promise.all(uploadPromises);
