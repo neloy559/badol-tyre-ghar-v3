@@ -476,7 +476,32 @@ const CatalogManager = () => {
 
       {activeTab === 'bulk' && (
         <div className="bulk-upload-section">
-          <p className="admin-sub-desc">Upload master inventory CSV/Excel. Columns: <code>sku, name, size, pattern, ply, designModel, retailPrice, wholesalePrice, stock, image</code></p>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px', marginBottom: '12px' }}>
+            <p className="admin-sub-desc" style={{ margin: 0 }}>Upload master inventory CSV/Excel. Columns: <code>sku, name, brand, category, size, pattern, ply, designModel, retailPrice, wholesalePrice, stock, image</code></p>
+            <button
+              onClick={() => {
+                const header = 'sku,name,brand,category,size,pattern,ply,designModel,retailPrice,wholesalePrice,stock,image';
+                const example = 'BTG-T-275-17,2.75-17 Tube,Hussain,tubes,2.75-17,,STD,,0,0,0,';
+                const csv = [header, example].join('\n');
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'BTG_Catalog_Upload_Template.csv';
+                a.click();
+                URL.revokeObjectURL(url);
+              }}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '6px',
+                padding: '7px 14px', borderRadius: '8px',
+                border: '1px solid var(--color-border)', background: '#fff',
+                fontSize: '12px', fontWeight: 600, cursor: 'pointer',
+                color: 'var(--color-text-secondary)', flexShrink: 0,
+              }}
+            >
+              <FileSpreadsheet size={14} /> Download Template
+            </button>
+          </div>
           <div
             className={`drop-zone ${isDragging ? 'dragging' : ''} ${rows.length ? 'has-file' : ''}`}
             onDrop={onDrop} onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
