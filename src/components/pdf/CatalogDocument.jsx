@@ -128,29 +128,31 @@ const styles = StyleSheet.create({
 });
 
 // ── About Us Back Page Component ──────────────────────────────
+// NOTE: @react-pdf/renderer uses Helvetica which has NO Bengali Unicode support.
+// All text in the PDF must be in English/Latin characters only.
 const AboutPage = ({ whatsapp }) => (
   <Page size="A4" style={styles.aboutPage}>
     <View style={styles.aboutHeader}>
-      <Text style={styles.aboutTitle}>বাদল টায়ার ঘর — আমাদের কথা</Text>
-      <Text style={styles.aboutTagline}>বিশ্বাস আর মানের সাথে কয়েক দশকের পথচলা।</Text>
+      <Text style={styles.aboutTitle}>Badol Tyre Ghar — Our Story</Text>
+      <Text style={styles.aboutTagline}>Decades of trust, quality, and service.</Text>
     </View>
 
     <Text style={styles.aboutBody}>
-      রংপুরের ঠিকাদারপাড়া মোড়ে যারা একবার এসেছেন, বাদল টায়ার ঘরের নাম তারা চেনেন। এই দোকান শুধু একটা ব্যবসা না — এটা আমার বাবার সারাজীবনের পরিশ্রম আর ভালোবাসার ফসল।
+      Badol Tyre Ghar is the most trusted name in tyres and automotive accessories in Rangpur. From a single shop at Thikadarpara Mor, Station Road, Shapla Chattar, we have grown into the region's leading wholesale destination for tubes, tyres, patches, sealants, and repair tools.
     </Text>
 
     <Text style={styles.aboutBody}>
-      আমার বাবা{' '}
+      Founded by{' '}
       <Text style={styles.aboutBold}>MD. Mostaq Sharker Badol</Text>
-      {' '}ছোটবেলা থেকেই এই বাজারে আছেন। এই মার্কেটের কত উঠানামা, কত পরিবর্তন — সব কিছু নিজের চোখে দেখেছেন, সামলেছেন। তিনিই এই এলাকায় প্রথম{' '}
+      {' '}— a man who has lived and breathed this market since his childhood. He was among the first in the region to establish an official dealership with{' '}
       <Text style={styles.aboutBold}>Force</Text>
-      {' '}(যেটা এখন{' '}
+      {' '}(now rebranded as{' '}
       <Text style={styles.aboutBold}>Hussain</Text>
-      {' '}নামে পরিচিত, Apex International-এর অংশ) এর সাথে অফিসিয়াল ডিলারশিপ করেন — যখন এই ধরনের কর্পোরেট চুক্তি এখানে কেউ ভাবতেও পারত না।
+      {', a sister concern of Apex International) — at a time when corporate partnerships in this trade were rare.'}
     </Text>
 
     <Text style={styles.aboutBody}>
-      এখন আমরা এই ব্র্যান্ডগুলোর অফিসিয়াল ডিলার:
+      We are now official dealers for:
     </Text>
 
     <View style={styles.brandsRow}>
@@ -160,27 +162,23 @@ const AboutPage = ({ whatsapp }) => (
     </View>
 
     <Text style={styles.aboutBody}>
-      আমি{' '}
+      Today,{' '}
       <Text style={styles.aboutBold}>MD. Faiaz Sharker Neloy</Text>
-      {' '}— বাবার একমাত্র ছেলে। পড়াশোনা শেষ করে চাকরির পেছনে না দৌড়ে বাবার এই ব্যবসাটাকেই এগিয়ে নিয়ে যাওয়ার সিদ্ধান্ত নিয়েছি। ২০১৫ সাল থেকে টেকনোলজির সাথে যুক্ত আছি — এখন সেই অভিজ্ঞতাটাই কাজে লাগাচ্ছি বাবার এই পুরনো ব্যবসাকে ডিজিটাল করতে।
-    </Text>
-
-    <Text style={styles.aboutBody}>
-      এই ওয়েবসাইট, এই ক্যাটালগ — সব কিছুই বাবার প্রতি আমার একটু ভালোবাসা। আর আপনাদের প্রতি একটা প্রতিশ্রুতি — একই বিশ্বাস, একই মান, এখন আরও সহজে।
+      {" — the founder's only son — carries this legacy forward, combining decades of business wisdom with a modern digital vision. This catalog is a commitment to serve the next generation of dealers with the same integrity, now at the speed of technology."}
     </Text>
 
     <View style={styles.contactBox}>
-      <Text style={styles.contactTitle}>যোগাযোগ করুন</Text>
+      <Text style={styles.contactTitle}>Contact Us</Text>
       <View style={styles.contactRow}>
-        <Text style={styles.contactLabel}>📍 ঠিকানা</Text>
-        <Text style={styles.contactValue}>ঠিকাদারপাড়া মোড়, স্টেশন রোড, শাপলা চত্বর, রংপুর</Text>
+        <Text style={styles.contactLabel}>Address</Text>
+        <Text style={styles.contactValue}>Thikadarpara Mor, Station Road, Shapla Chattar, Rangpur</Text>
       </View>
       <View style={styles.contactRow}>
-        <Text style={styles.contactLabel}>📞 WhatsApp</Text>
+        <Text style={styles.contactLabel}>WhatsApp</Text>
         <Text style={styles.contactValue}>+{whatsapp || '880XXXXXXXXXX'}</Text>
       </View>
       <View style={styles.contactRow}>
-        <Text style={styles.contactLabel}>🌐 ওয়েবসাইট</Text>
+        <Text style={styles.contactLabel}>Website</Text>
         <Text style={styles.contactValue}>badol-tyre-ghar.vercel.app</Text>
       </View>
     </View>
