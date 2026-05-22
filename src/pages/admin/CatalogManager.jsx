@@ -174,17 +174,20 @@ const CatalogManager = () => {
     const files = Array.from(e.dataTransfer?.files || e.target.files || []);
     const validFiles = files.filter(f => f.type.startsWith('image/'));
 
-    const totalDroppedSize = validFiles.reduce((acc, f) => acc + f.size, 0);
-    const existingNewFilesSize = newFiles.reduce((acc, f) => acc + f.size, 0);
+    // BUG-022 fix: size guard was checking dropped files vs newFiles BEFORE adding them,
+    // so multi-drop could bypass the 3MB limit. Now checks total accumulated size.
+    const droppedSize   = validFiles.reduce((acc, f) => acc + f.size, 0);
+    const existingSize  = newFiles.reduce((acc, f) => acc + f.size, 0);
+    const existingMediaSize = 0; // existing media are already uploaded, don't count
 
-    if (totalDroppedSize + existingNewFilesSize > 3 * 1024 * 1024) {
-       setSingleError(`Total size of all images combined cannot exceed 3MB. Please compress your images.`);
-       return;
+    if (droppedSize + existingSize > 3 * 1024 * 1024) {
+      setSingleError(`Total new images cannot exceed 3MB. Please compress your images.`);
+      return;
     }
 
     if (validFiles.length) {
       setNewFiles(prev => [...prev, ...validFiles]);
-      setSingleError(''); 
+      setSingleError('');
     }
   }, [newFiles]);
 
@@ -256,6 +259,13 @@ const CatalogManager = () => {
       setIsUploadingImage(false);
     }
   };
+
+  // BUG-023 fix: URL.createObjectURL called inline in JSX creates a new object URL
+  // on every render and never revokes them — memory leak. Use useMemo + cleanup.
+  const newFilePreviewUrls = useMemo(() => newFiles.map(f => URL.createObjectURL(f)), [newFiles]);
+  useEffect(() => {
+    return () => { newFilePreviewUrls.forEach(url => URL.revokeObjectURL(url)); };
+  }, [newFilePreviewUrls]);
 
   useEffect(() => {
     const stored = sessionStorage.getItem('btg_edit_product');
@@ -355,7 +365,7 @@ const CatalogManager = () => {
                     ))}
                     {newFiles.map((file, i) => (
                       <div key={'new'+i} style={{ position: 'relative' }}>
-                        <img src={URL.createObjectURL(file)} alt="Preview" style={{ height: '80px', borderRadius: '8px', objectFit: 'contain', border: '2px dashed var(--color-primary)' }} />
+                        <img src={newFilePreviewUrls[i]} alt="Preview" style={{ height: '80px', borderRadius: '8px', objectFit: 'contain', border: '2px dashed var(--color-primary)' }} />
                         <button type="button" className="remove-img-btn" onClick={(e) => { e.stopPropagation(); setNewFiles(prev => prev.filter((_, idx) => idx !== i)); }} style={{ position: 'absolute', top: '-5px', right: '-5px', background: 'red', color: 'white', borderRadius: '50%', width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', fontSize: '12px' }}>&times;</button>
                       </div>
                     ))}

@@ -12,12 +12,16 @@ const ROLE_LABEL = {
 };
 
 export default function Profile() {
-  const { user, logout, isB2B, isAdmin } = useAuth();
+  const { user, logout, isAdmin } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => { await logout(); navigate('/'); };
 
   const roleInfo = ROLE_LABEL[user?.role] || ROLE_LABEL.customer;
+
+  // BUG-011 fix: isB2B was always undefined — AuthContext never exposes it.
+  // Derive it directly from user.role.
+  const isB2B = user?.role === 'dealer' || user?.role === 'sales_partner';
 
   return (
     <div className="profile-root">

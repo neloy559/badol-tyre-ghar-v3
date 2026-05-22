@@ -9,11 +9,12 @@ const AssetAuditor = () => {
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState('');
 
-  // 1. Fetch products that need audit (e.g., legacy or missing images)
+  // BUG-028 fix: was using public /products endpoint which defaults to limit:24.
+  // Admin auditor should see ALL products — use admin endpoint with high limit.
   const { data: products, isLoading } = useQuery({
     queryKey: ['products-audit'],
     queryFn: async () => {
-      const res = await api.get('/products');
+      const res = await api.get('/admin/catalog/products?limit=500&page=1');
       return res.data.data.products;
     }
   });
@@ -109,8 +110,9 @@ const AssetAuditor = () => {
               </div>
 
               <div className="card-actions">
+                {/* BUG-029 fix: was /product/:slug — correct route is /catalog/:slug */}
                 <a 
-                  href={`/product/${product.slug}`} 
+                  href={`/catalog/${product.slug}`} 
                   target="_blank" 
                   className="btn-secondary"
                   rel="noreferrer"

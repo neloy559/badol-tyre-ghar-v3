@@ -60,19 +60,22 @@ export default function Product() {
   });
 
   // ── Image Navigation ─────────────────────────────────────────
+  // BUG-004 fix: auto-rotation was broken because nextImage closed over activeImage,
+  // so every rotation changed activeImage → new nextImage ref → interval reset.
+  // Fix: use a ref for the current index so nextImage is stable.
+  const activeIndexRef = useRef(0);
+
   const nextImage = useCallback(() => {
     if (!product?.media?.length) return;
-    const currentIndex = product.media.indexOf(activeImage);
-    const nextIndex = (currentIndex + 1) % product.media.length;
-    setActiveImage(product.media[nextIndex]);
-  }, [product?.media, activeImage]);
+    activeIndexRef.current = (activeIndexRef.current + 1) % product.media.length;
+    setActiveImage(product.media[activeIndexRef.current]);
+  }, [product?.media]);
 
   const prevImage = useCallback(() => {
     if (!product?.media?.length) return;
-    const currentIndex = product.media.indexOf(activeImage);
-    const prevIndex = (currentIndex - 1 + product.media.length) % product.media.length;
-    setActiveImage(product.media[prevIndex]);
-  }, [product?.media, activeImage]);
+    activeIndexRef.current = (activeIndexRef.current - 1 + product.media.length) % product.media.length;
+    setActiveImage(product.media[activeIndexRef.current]);
+  }, [product?.media]);
 
   // ── Side Effects ─────────────────────────────────────────────
   useEffect(() => {
@@ -120,26 +123,31 @@ export default function Product() {
   };
 
   const buildWhatsAppMsg = () => {
+    // BUG-007 fix: was using variant?.price (flat legacy). Schema uses pricing.retail.
+    const price = variant?.pricing?.retail || variant?.pricing?.wholesale || variant?.price;
     const lines = [
       `*Inquiry from BTG V3*`,
       `Product: ${product.name}`,
       `Size: ${product.commonSpecs?.size || '—'}`,
       variant?.ply         ? `Ply: ${variant.ply}` : '',
       variant?.designModel ? `Model: ${variant.designModel}` : '',
-      `Price: ৳ ${variant?.price?.toLocaleString() || '—'}`,
+      price ? `Price: ৳ ${price.toLocaleString()}` : '',
     ].filter(Boolean).join('\n');
     return `https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER}?text=${encodeURIComponent(lines)}`;
   };
 
-  // Deduplicate variants by brand/model for the UI selector
+  // BUG-005 fix: dedup by SKU not designModel — undefined designModel caused all
+  // variants without a model to collapse into one, silently dropping the rest.
+  // BUG-006 fix: active chip now compares against selectedSku OR first variant's sku.
   const uniqueVariants = [];
-  const seenModels = new Set();
+  const seenSkus = new Set();
   product.variants?.forEach(v => {
-    if (!seenModels.has(v.designModel)) {
-      seenModels.add(v.designModel);
+    if (v.sku && !seenSkus.has(v.sku)) {
+      seenSkus.add(v.sku);
       uniqueVariants.push(v);
     }
   });
+  const activeVariantSku = selectedSku || product.variants?.[0]?.sku;
 
   return (
     <div className="product-page-root">
@@ -246,7 +254,7 @@ export default function Product() {
               {uniqueVariants.map((v) => (
                 <button
                   key={v.sku}
-                  className={`variant-chip ${(selectedSku || product.variants[0]?.sku) === v.sku ? 'active' : ''}`}
+                  className={`variant-chip ${activeVariantSku === v.sku ? 'active' : ''}`}
                   onClick={() => setSelectedSku(v.sku)}
                 >
                   {v.ply && <span>{v.ply} Ply</span>}
