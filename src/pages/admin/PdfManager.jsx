@@ -139,6 +139,45 @@ export default function PdfManager() {
     }
   };
 
+  // ── Preview: generate locally + download (no Cloudinary upload) ──
+  const [previewingSlug, setPreviewingSlug] = useState(null);
+  const handlePreview = async (categorySlug) => {
+    if (previewingSlug) return;
+    setPreviewingSlug(categorySlug);
+    try {
+      const params = new URLSearchParams({ limit: '500' });
+      if (categorySlug !== 'all') params.set('category', categorySlug);
+      const res = await authApi.get('/catalog', { params });
+      const products = res.data?.data?.products || [];
+
+      if (products.length === 0) { alert('No products found.'); return; }
+
+      const categoryName = CATEGORY_LABELS[categorySlug] || categorySlug;
+      const prodsWithImages = await prefetchImages(products);
+
+      let logoBase64 = null;
+      try {
+        const lr = await fetch('/assets/branding/logo.jpeg');
+        if (lr.ok) { const lb = await lr.blob(); logoBase64 = await new Promise(r => { const fr = new FileReader(); fr.onloadend = () => r(fr.result); fr.readAsDataURL(lb); }); }
+      } catch { /* optional */ }
+
+      const blob = await pdf(
+        <CatalogDocument products={prodsWithImages} categoryName={categoryName} logoBase64={logoBase64} />
+      ).toBlob();
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `BadolTyreGhar_${categoryName.replace(/\s+/g, '')}_${new Date().toISOString().slice(0,10)}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      alert(`Preview failed: ${err.message}`);
+    } finally {
+      setPreviewingSlug(null);
+    }
+  };
+
   const manifests = manifestData || [];
 
   return (
@@ -255,17 +294,20 @@ export default function PdfManager() {
                         </button>
                         {m.status === 'ready' && (
                           <button
-                            onClick={() => handleGenerate(m.categorySlug)}
-                            disabled={!!generatingSlug}
+                            onClick={() => handlePreview(m.categorySlug)}
+                            disabled={!!previewingSlug}
                             style={{
                               display: 'inline-flex', alignItems: 'center', gap: '4px',
                               padding: '4px 10px', borderRadius: '6px',
                               border: '1px solid #BBF7D0', color: '#16a34a',
-                              background: '#f0fdf4',
+                              background: previewingSlug === m.categorySlug ? '#dcfce7' : '#f0fdf4',
                               fontSize: '11px', fontWeight: 600, cursor: 'pointer',
                             }}
                           >
-                            <Download size={12} /> Preview
+                            {previewingSlug === m.categorySlug
+                              ? <><Loader2 size={12} className="spin" /> Generating...</>
+                              : <><Download size={12} /> Download</>
+                            }
                           </button>
                         )}
                       </div>
