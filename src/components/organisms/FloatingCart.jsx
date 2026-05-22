@@ -26,42 +26,47 @@ const FloatingCart = ({ isOpen, onClose }) => {
 
   const handleWhatsAppInquiry = async () => {
     const adminNumber = import.meta.env.VITE_WHATSAPP_NUMBER || '8801647794452';
-    
-    // 1. Build the Message
-    let message = `*Badol Tyre Ghar - New RFQ*%0A`;
-    message += `Customer: ${user?.profile?.name || 'Guest'} (${user?.phone || 'N/A'})%0A%0A`;
-    message += `*Items:*%0A`;
-    
-    items.forEach((item, index) => {
-      message += `${index + 1}. ${item.product.name} (${item.variant.size || ''}) x ${item.quantity} - ৳${item.variant.price * item.quantity}%0A`;
-    });
-    
-    message += `%0A*Estimated Total:* ৳${cartTotal.toLocaleString()}%0A`;
-    message += `Please confirm availability and final pricing.`;
+
+    // Build structured message with correct price fields
+    const lines = [
+      `*Badol Tyre Ghar — Quote Request*`,
+      `Customer: ${user?.profile?.name || 'Guest'}${user?.phone ? ` (${user.phone})` : ''}`,
+      ``,
+      `*Items:*`,
+      ...items.map((item, i) => {
+        const price = item.variant?.pricing?.retail
+          || item.variant?.pricing?.wholesale
+          || item.variant?.price
+          || 0;
+        const lineTotal = price * item.quantity;
+        return `${i + 1}. ${item.product.name} | Size: ${item.product.commonSpecs?.size || '—'} | Ply: ${item.variant?.ply || '—'} | Qty: ${item.quantity}${lineTotal > 0 ? ` | ৳${lineTotal.toLocaleString()}` : ''}`;
+      }),
+      ``,
+      cartTotal > 0 ? `*Estimated Total:* ৳${cartTotal.toLocaleString()}` : '',
+      `Please confirm availability and final pricing. Thank you.`,
+    ].filter(Boolean).join('\n');
 
     try {
-      // 2. Log Inquiry to Database (Optional - will fail for guests)
-      const payload = {
+      // Log inquiry to DB (optional — fails silently for guests)
+      await api.post('/cart', {
         items: items.map(i => ({
-          product: i.product._id,
+          product:  i.product._id,
           variant: {
-            sku:         i.variant.sku,
-            ply:         i.variant.ply,
-            designModel: i.variant.designModel,
-            price:       i.variant.price
+            sku:         i.variant?.sku,
+            ply:         i.variant?.ply,
+            designModel: i.variant?.designModel,
+            price:       i.variant?.pricing?.retail || i.variant?.price || 0,
           },
-          quantity: i.quantity
+          quantity: i.quantity,
         })),
-        totalAmount: cartTotal
-      };
-
-      await api.post('/cart', payload);
-    } catch (err) {
-      console.warn('Inquiry logging skipped or failed (likely guest).');
-    } finally {
-      // 3. Open WhatsApp ALWAYS
-      window.open(`https://wa.me/${adminNumber}?text=${message}`, '_blank');
+        totalAmount: cartTotal,
+      });
+    } catch {
+      // Guest or error — still open WhatsApp
     }
+
+    // Always open WhatsApp with the message
+    window.open(`https://wa.me/${adminNumber}?text=${encodeURIComponent(lines)}`, '_blank');
   };
 
   return (

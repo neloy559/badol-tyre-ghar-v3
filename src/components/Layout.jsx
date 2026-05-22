@@ -119,7 +119,7 @@ export default function Layout() {
     { to: '/',        icon: Home,        label: 'হোম' },
     { to: '/catalog', icon: Grid3x3,     label: 'ক্যাটালগ' },
     {
-      href: `https://wa.me/${brandingData?.config?.contact?.whatsapp || import.meta.env.VITE_WHATSAPP_NUMBER || '8801647794452'}`,
+      href: `https://wa.me/${brandingData?.config?.contact?.whatsapp || import.meta.env.VITE_WHATSAPP_NUMBER || '8801647794452'}?text=${encodeURIComponent('আসসালামু আলাইকুম! আমি Badol Tyre Ghar-এর পণ্য সম্পর্কে জানতে চাই।')}`,
       icon: WhatsAppLogo,
       label: 'WhatsApp',
       isExternal: true,
