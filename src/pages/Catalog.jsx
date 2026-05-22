@@ -10,6 +10,7 @@ import CatalogDocument from '../components/pdf/CatalogDocument';
 import SEO from '../components/SEO';
 import { useAuth } from '../context/AuthContext';
 import { getCachedPdf, logPdfDownload } from '../hooks/usePdfCache';
+import { prefetchImages } from '../components/pdf/CatalogDocument';
 import './Catalog.css';
 
 const LIMIT = 24;
@@ -59,11 +60,24 @@ const Catalog = () => {
         return;
       }
 
+      // Pre-fetch images as base64 to bypass CORS in PDF renderer
+      const prodsWithImages = await prefetchImages(prods);
+
+      // Fetch logo as base64
+      let logoBase64 = null;
+      try {
+        const logoRes = await fetch('/assets/branding/logo.jpeg');
+        if (logoRes.ok) {
+          const blob = await logoRes.blob();
+          logoBase64 = await new Promise(r => { const fr = new FileReader(); fr.onloadend = () => r(fr.result); fr.readAsDataURL(blob); });
+        }
+      } catch { /* logo optional */ }
+
       const blob = await pdf(
         <CatalogDocument
-          products={prods}
+          products={prodsWithImages}
           categoryName={category ? category.replace(/-/g, ' ') : 'All Products'}
-          whatsapp={import.meta.env.VITE_WHATSAPP_NUMBER || ''}
+          logoBase64={logoBase64}
         />
       ).toBlob();
       const url = URL.createObjectURL(blob);

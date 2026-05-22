@@ -11,6 +11,7 @@ import { useAuth } from '../context/AuthContext';
 import { pdf } from '@react-pdf/renderer';
 import CatalogDocument from '../components/pdf/CatalogDocument';
 import { usePdfCache, getCachedPdf, logPdfDownload } from '../hooks/usePdfCache';
+import { prefetchImages } from '../components/pdf/CatalogDocument';
 // BUG-001 fix: import must be at top of file, not after component declarations
 import { CATEGORIES, getCategoryLogo } from '../utils/constants';
 import './Home.css';
@@ -73,8 +74,21 @@ export default function Home() {
       const res = await authApi.get('/catalog', { params });
       const prods = res.data?.data?.products || [];
 
+      // Pre-fetch images as base64 to bypass CORS
+      const prodsWithImages = await prefetchImages(prods);
+
+      // Fetch logo as base64
+      let logoBase64 = null;
+      try {
+        const logoRes = await fetch('/assets/branding/logo.jpeg');
+        if (logoRes.ok) {
+          const blob = await logoRes.blob();
+          logoBase64 = await new Promise(r => { const fr = new FileReader(); fr.onloadend = () => r(fr.result); fr.readAsDataURL(blob); });
+        }
+      } catch { /* logo optional */ }
+
       const blob = await pdf(
-        <CatalogDocument products={prods} categoryName={label} whatsapp={whatsapp} />
+        <CatalogDocument products={prodsWithImages} categoryName={label} logoBase64={logoBase64} />
       ).toBlob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
