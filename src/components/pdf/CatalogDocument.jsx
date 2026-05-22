@@ -13,8 +13,14 @@ const getPdfImageUrl = (url) => {
     const idx = url.indexOf('/upload/');
     if (idx === -1) return url;
     const base = url.substring(0, idx + 8);
-    const path = url.substring(idx + 8).replace(/^[^/]+\//, '');
-    return `${base}f_jpg,c_pad,b_white,w_200,q_70/${path}`;
+    const path = url.substring(idx + 8);
+    // BUG-021 fix: only strip existing transform prefix (e.g. "f_auto,w_400/")
+    // A transform prefix always contains a comma or equals sign before the first slash.
+    // A plain path like "folder/image.jpg" has no comma — don't strip it.
+    const cleanPath = /^[^/]*[,=][^/]*\//.test(path)
+      ? path.replace(/^[^/]+\//, '')
+      : path;
+    return `${base}f_jpg,c_pad,b_white,w_150,q_60/${cleanPath}`;
   }
   return url;
 };
@@ -234,9 +240,10 @@ const CatalogDocument = ({
                   <View style={styles.imgBox}>
                     {imageUrl ? (
                       <Image
-                        src={{ uri: imageUrl, method: 'GET', headers: {}, body: '' }}
+                        src={{ uri: imageUrl, method: 'GET', headers: { 'Accept': 'image/jpeg' }, body: '' }}
                         style={styles.img}
                         cache={true}
+                        onError={() => {}}
                       />
                     ) : (
                       <View style={styles.imgPlaceholder} />

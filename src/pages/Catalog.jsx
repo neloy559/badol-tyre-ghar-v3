@@ -75,7 +75,7 @@ const Catalog = () => {
       logPdfDownload(slug, null, false);
     } catch (err) {
       console.error('PDF error:', err);
-      alert('PDF generation failed. Please try again.');
+      alert(`PDF generation failed: ${err?.message || 'Unknown error'}. Try with a category filter to reduce product count.`);
     } finally {
       setPdfLoading(false);
     }
