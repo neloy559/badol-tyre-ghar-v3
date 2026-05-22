@@ -13,23 +13,19 @@ const getPdfImageUrl = (url) => {
     const idx = url.indexOf('/upload/');
     if (idx === -1) return url;
     const base = url.substring(0, idx + 8);
-    const path = url.substring(idx + 8);
-    // BUG-021 fix: only strip existing transform prefix (e.g. "f_auto,w_400/")
-    // A transform prefix always contains a comma or equals sign before the first slash.
-    // A plain path like "folder/image.jpg" has no comma — don't strip it.
-    const cleanPath = /^[^/]*[,=][^/]*\//.test(path)
-      ? path.replace(/^[^/]+\//, '')
-      : path;
+    const rest = url.substring(idx + 8);
+    // Strip any existing transform block (contains commas/underscores before first slash)
+    // e.g. "f_auto,c_pad,w_400/v123/folder/image.jpg" → "v123/folder/image.jpg"
+    const cleanPath = rest.replace(/^[^/]*,[^/]*\//, '');
     return `${base}f_jpg,c_pad,b_white,w_150,q_60/${cleanPath}`;
   }
+  // For non-Cloudinary URLs (ImgBB etc), return as-is
   return url;
 };
 
 const formatPrice = (variant) => {
-  if (!variant) return 'Call for Price';
-  const price = variant.pricing?.retail || variant.pricing?.wholesale || variant.price;
-  if (!price) return 'Call for Price';
-  return `BDT ${Number(price).toLocaleString('en-IN')}`;
+  // Prices are NOT shown in PDF — customers inquire, owner replies manually
+  return null;
 };
 
 const styles = StyleSheet.create({
@@ -136,7 +132,26 @@ const styles = StyleSheet.create({
 // ── About Us Back Page Component ──────────────────────────────
 // NOTE: @react-pdf/renderer uses Helvetica which has NO Bengali Unicode support.
 // All text in the PDF must be in English/Latin characters only.
-const AboutPage = ({ whatsapp }) => (
+
+// Category-specific brand chips
+const getBrandChips = (categoryName) => {
+  const cat = (categoryName || '').toLowerCase();
+  if (cat.includes('tube') || cat.includes('tyre') || cat.includes('flap')) {
+    return ['Hussain', 'MTF', 'Zess'];
+  }
+  if (cat.includes('sealant')) {
+    return ['Arson', 'MRF', 'NS Best', 'Total', 'Omni'];
+  }
+  if (cat.includes('patch')) {
+    return ['Omni', 'Elephant', 'CT', 'Big Stone'];
+  }
+  if (cat.includes('gadget')) {
+    return ['Dunlop', 'Sun'];
+  }
+  return ['Hussain', 'MTF', 'Zess', 'Arson', 'Omni'];
+};
+
+const AboutPage = ({ whatsapp, categoryName }) => (
   <Page size="A4" style={styles.aboutPage}>
     <View style={styles.aboutHeader}>
       <Text style={styles.aboutTitle}>Badol Tyre Ghar — Our Story</Text>
@@ -162,7 +177,7 @@ const AboutPage = ({ whatsapp }) => (
     </Text>
 
     <View style={styles.brandsRow}>
-      {['Hussain', 'MTF', 'Zess', 'MRF', 'Tourino', 'Rupsha'].map(b => (
+      {getBrandChips(categoryName).map(b => (
         <Text key={b} style={styles.brandChip}>{b}</Text>
       ))}
     </View>
@@ -181,7 +196,7 @@ const AboutPage = ({ whatsapp }) => (
       </View>
       <View style={styles.contactRow}>
         <Text style={styles.contactLabel}>WhatsApp</Text>
-        <Text style={styles.contactValue}>+{whatsapp || '880XXXXXXXXXX'}</Text>
+        <Text style={styles.contactValue}>+880 1647-794452</Text>
       </View>
       <View style={styles.contactRow}>
         <Text style={styles.contactLabel}>Website</Text>
@@ -255,7 +270,7 @@ const CatalogDocument = ({
                     <Text style={styles.specs}>
                       {[size, ply].filter(Boolean).join(' · ') || '—'}
                     </Text>
-                    <Text style={styles.price}>{formatPrice(variant)}</Text>
+                    {/* No price shown — inquiry only */}
                   </View>
                 </View>
               );
@@ -276,7 +291,7 @@ const CatalogDocument = ({
       </Page>
 
       {/* ── About Us Back Page ── */}
-      <AboutPage whatsapp={whatsapp} />
+      <AboutPage whatsapp={whatsapp} categoryName={categoryName} />
     </Document>
   );
 };
