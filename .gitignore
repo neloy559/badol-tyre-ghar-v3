@@ -60,3 +60,4 @@ scripts/get_admin_jwt.cjs
 scripts/fetch_fresh_jwt.cjs
 backend/scratch/seed_admin.js
 scratch/api_scripts/makeNeloyAdmin.js
+scratch/push_cloudinary.cjs
