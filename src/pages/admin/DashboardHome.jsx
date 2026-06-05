@@ -4,12 +4,13 @@ import { BarChart2, TrendingUp, Clock } from 'lucide-react';
 import api from '../../services/api';
 
 const DashboardHome = () => {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['analytics'],
-    queryFn: async () => (await api.get('/analytics/summary')).data.data,
+    queryFn: async () => (await api.get('/admin/analytics/summary')).data.data,
   });
 
   if (isLoading) return <div className="admin-loading">Loading Analytics...</div>;
+  if (isError)   return <div className="admin-loading">Failed to load analytics.</div>;
 
   const stats = [
     { label: 'Today',      value: data?.hits?.daily   ?? '—', sub: 'API Hits', icon: Clock },
