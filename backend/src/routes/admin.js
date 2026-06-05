@@ -8,6 +8,7 @@ const inquiryAdmin     = require('../modules/inquiry/inquiry.admin.controller');
 const marketingAdmin   = require('../modules/marketing/marketing.admin.controller');
 const searchIntelAdmin = require('../modules/catalog/searchIntelligence.admin.controller');
 const pdfAdmin         = require('../modules/catalog/pdf.admin.controller');
+const analyticsAdmin   = require('../modules/ops/analytics.admin.controller');
 
 // Sub-routers
 const catalogAdminRoutes = require('./admin.catalog');
@@ -16,7 +17,10 @@ const catalogAdminRoutes = require('./admin.catalog');
 router.use(protect);
 router.use(restrictTo('admin', 'editor'));
 
-// 1. Catalog Admin (CRUD, Bulk, Upload)
+// 1. Analytics Dashboard
+router.get('/analytics/summary', analyticsAdmin.getSummary);
+
+// 2. Catalog Admin (CRUD, Bulk, Upload)
 router.use('/catalog', catalogAdminRoutes);
 
 // 2. Dealer Verification
