@@ -1,9 +1,10 @@
 require('dotenv').config();
 const app = require('./src/app');
 const connectDB = require('./src/config/db');
+const { seedTierPricing } = require('./src/scripts/seedTierPricing');
 
-// Connect Database
-const dbPromise = connectDB();
+// Connect Database then seed
+const dbPromise = connectDB().then(() => seedTierPricing());
 
 // Start Server (Local) or Export (Vercel)
 if (process.env.NODE_ENV !== 'production') {

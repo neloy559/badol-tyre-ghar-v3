@@ -542,3 +542,28 @@
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
+
+/* Dealer Tier Price Block */
+.product-tier-price-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 16px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+  margin-top: 8px;
+}
+
+.product-tier-price {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #065f46;
+  margin: 0;
+}
+
+.product-tier-discount-note {
+  font-size: 0.8rem;
+  color: #059669;
+  margin: 0;
+}

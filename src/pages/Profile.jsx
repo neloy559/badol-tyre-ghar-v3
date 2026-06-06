@@ -1,6 +1,7 @@
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { LogOut, ShieldCheck, Clock, User } from 'lucide-react';
+import DealerTierBadge from '../components/ui/DealerTierBadge';
 import './Profile.css';
 
 const ROLE_LABEL = {
@@ -57,10 +58,12 @@ export default function Profile() {
               <span>Payment Terms</span>
               <strong>{user?.paymentTerms || 'Cash'}</strong>
             </div>
-            <div className="credit-row">
-              <span>Discount Tier</span>
-              <strong>{user?.discountMultiplier < 1 ? `${((1 - user.discountMultiplier) * 100).toFixed(0)}% extra off` : 'Standard'}</strong>
-            </div>
+            {user?.tier && (
+              <div className="credit-row">
+                <span>Dealer Tier</span>
+                <DealerTierBadge tier={user.tier} />
+              </div>
+            )}
           </div>
         )}
 

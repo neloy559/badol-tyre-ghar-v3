@@ -13,6 +13,7 @@ import { getCategoryLogo, STOCK_LABEL } from '../utils/constants';
 import { getCloudinaryUrl, CLOUDINARY_PRESETS } from '../utils/cloudinary';
 
 import ProductCard from '../components/molecules/ProductCard';
+import DealerTierBadge from '../components/ui/DealerTierBadge';
 
 const WhatsAppLogo = ({ size = 18 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -25,6 +26,7 @@ export default function Product() {
   const { slug }       = useParams();
   const navigate       = useNavigate();
   const { user } = useAuth();
+  const isDealer = user?.role === 'dealer';
   const { addToCart: addItem } = useCart();
   const queryClient    = useQueryClient();
   const { trackPageView, logEvent } = useAnalytics();
@@ -304,6 +306,17 @@ export default function Product() {
             </>
           )}
         </div>
+
+        {/* Dealer Tier Price Block */}
+        {isDealer && product.tierPrice && (
+          <div className="product-tier-price-block">
+            <DealerTierBadge tier={product.tierPrice.tier} />
+            <p className="product-tier-price">Your price: ৳{product.tierPrice.adjustedPrice.toLocaleString()}</p>
+            {product.tierPrice.discountPercent > 0 && (
+              <p className="product-tier-discount-note">{product.tierPrice.discountPercent}% dealer discount applied</p>
+            )}
+          </div>
+        )}
 
         {/* Quick Highlights (Daraz Style) */}
         <div className="product-highlights">

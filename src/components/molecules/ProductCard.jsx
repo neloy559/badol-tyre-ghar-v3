@@ -5,6 +5,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import api from '../../services/api';
 import { getCloudinaryUrl, getBlurUrl, CLOUDINARY_PRESETS } from '../../utils/cloudinary';
 import { getCategoryLogo } from '../../utils/constants';
+import { useAuth } from '../../context/AuthContext';
 import './ProductCard.css';
 
 const ProductCard = ({ product }) => {
@@ -19,6 +20,9 @@ const ProductCard = ({ product }) => {
     category,
     commonSpecs
   } = product;
+
+  const { user, isAuthenticated } = useAuth();
+  const isDealer = isAuthenticated && user?.role === 'dealer';
 
   const queryClient = useQueryClient();
   const [imgLoaded, setImgLoaded] = useState(false);
@@ -124,6 +128,15 @@ const ProductCard = ({ product }) => {
           <div className="btg-pcard__pricing">
             {showPrice === false ? (
               <p className="btg-pcard__price call-for-price">Call for Price</p>
+            ) : isDealer && product.tierPrice?.adjustedPrice != null ? (
+              <>
+                <p className="btg-pcard__price">৳ {product.tierPrice.adjustedPrice.toLocaleString()}</p>
+                {product.tierPrice.discountPercent > 0 && (
+                  <p className="btg-pcard__mrp" style={{ fontSize: '0.7rem', color: '#6b7280' }}>
+                    {product.tierPrice.discountPercent}% dealer discount
+                  </p>
+                )}
+              </>
             ) : activeVariant.price ? (
               <>
                 <p className="btg-pcard__price">৳ {price.toLocaleString()}</p>

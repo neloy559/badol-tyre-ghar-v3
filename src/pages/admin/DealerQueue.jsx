@@ -13,7 +13,10 @@ const DealerQueue = () => {
   });
 
   const verify = useMutation({
-    mutationFn: ({ id, approve }) => api.patch(`/admin/dealers/${id}/verify`, { approve }),
+    mutationFn: ({ id, approve }) =>
+      approve
+        ? api.patch(`/admin/dealers/${id}/approve`)
+        : api.patch(`/admin/dealers/${id}/reject`, { rejectionReason: '' }),
     onSuccess: () => queryClient.invalidateQueries(['pending-dealers']),
   });
 
@@ -48,6 +51,9 @@ const DealerQueue = () => {
               <div className="dealer-header">
                 <h3 className="dealer-name">{d.profile?.name || 'Anonymous'}</h3>
                 <span className="dealer-role-tag">{d.role}</span>
+                <span className="status-tag" data-status={d.registrationStatus}>
+                  {d.registrationStatus}
+                </span>
               </div>
               
               <div className="dealer-details">

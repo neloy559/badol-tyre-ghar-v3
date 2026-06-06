@@ -27,6 +27,20 @@ const UserSchema = new Schema({
     location:   Object,
     lastActive: Date,
   },
+  tier: {
+    type:    String,
+    enum:    ['standard', 'silver', 'gold', 'platinum'],
+    default: 'standard',
+  },
+  registrationStatus: {
+    type:    String,
+    enum:    ['pending', 'approved', 'rejected'],
+    default: 'approved', // existing admin-created users stay approved
+  },
+  rejectionReason: {
+    type:    String,
+    default: null,
+  },
 }, { timestamps: true });
 
 module.exports = mongoose.models.User || mongoose.model('User', UserSchema);
