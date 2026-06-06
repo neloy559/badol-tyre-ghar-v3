@@ -3,8 +3,8 @@
 > A full-stack B2B product catalog and e-commerce platform for a real tyre wholesale business in Bangladesh.
 
 [![Live](https://img.shields.io/badge/Live-badol--tyre--ghar.vercel.app-blue?style=flat-square)](https://badol-tyre-ghar.vercel.app)
-[![Version](https://img.shields.io/badge/version-0.5.0-green?style=flat-square)](https://github.com/neloy559/badol-tyre-ghar-v3/releases)
-[![Status](https://img.shields.io/badge/status-active%20development-orange?style=flat-square)]()
+[![Version](https://img.shields.io/badge/version-1.0.0-brightgreen?style=flat-square)](https://github.com/neloy559/badol-tyre-ghar-v3/releases)
+[![Status](https://img.shields.io/badge/status-production%20ready-brightgreen?style=flat-square)]()
 
 ---
 
@@ -130,11 +130,11 @@ version-3/
 
 ---
 
-## Admin Dashboard — 14 Modules
+## Admin Dashboard — 15 Modules
 
 | Module | Status | Description |
 |--------|--------|-------------|
-| Overview | 🔄 In Progress | API analytics — daily/weekly/monthly hits + top paths |
+| Overview (Analytics) | ✅ Complete | KPI cards, Recharts charts, top products table, admin activity feed |
 | Catalog Manager | ✅ Complete | Single product CRUD + bulk CSV upload + image upload |
 | Products Manager | ✅ Complete | Visibility/price toggles, bulk operations per category |
 | Tags Manager | ✅ Complete | Custom search synonyms per product |
@@ -143,7 +143,8 @@ version-3/
 | Brand Manager | ✅ Complete | Brand CRUD with category assignment |
 | Asset Auditor | ✅ Complete | Audit legacy ImgBB vs Cloudinary images |
 | Branding Manager | ✅ Complete | Site logo, banners CRUD, WhatsApp config, About photos |
-| Dealer Queue | ✅ Complete | Verify/reject dealers, set discount multipliers |
+| Dealer Queue | ✅ Complete | Legacy verification queue (migrated to new endpoints) |
+| Registrations | ✅ Complete | Approve/reject pending dealers with tier assignment |
 | Inquiry CRM | ✅ Complete | Track inquiries → replied → converted/closed |
 | Campaign Manager | ✅ Complete | Create discount campaigns by brand/category/product |
 | Bulk Markup | ✅ Complete | Bulk price adjustment (% or fixed amount) |
@@ -205,28 +206,31 @@ as `searchTags` on relevant products — improving discoverability over time.
 
 ---
 
-## Current State (v0.5.0)
+## Current State (v1.0.0)
 
-### Working
+### Complete ✅
 - Product catalog with infinite scroll + advanced filtering (category, brand, size, price, text search)
 - Product detail pages with category-specific spec groups
-- Admin dashboard — 13/14 modules complete
+- Admin dashboard — 15 modules, all complete
 - JWT auth with refresh token rotation + mutex
 - PDF catalog generation + Cloudinary upload + nightly cron
-- WhatsApp inquiry flow
+- WhatsApp inquiry flow + Inquiry CRM
 - Campaign pricing system with in-memory cache
 - Search Intelligence — capture, analyze, assign
-- Dealer verification queue
+- **Analytics Dashboard** — KPI cards, Recharts bar + line charts, top products table, activity feed
+- **Dealer Tier Pricing System** — 4 tiers (Standard/Silver/Gold/Platinum), server-side price computation, DealerTierBadge in catalog + product + profile
+- **Registration → Verification Flow** — public /register page, pending status gate at login, admin registrations module with approve/reject/tier assignment
 
-### Pending (toward v1.0.0)
-
-| Feature | Priority | Notes |
-|---------|----------|-------|
-| Analytics dashboard | High | Backend endpoint added in v0.6.0 |
-| User registration flow | High | Register → pending → admin verifies |
-| Dealer pricing UI | Medium | Dealers see their negotiated prices |
-| Profile page | Medium | Order history, account settings |
-| Shops page | Low | Branch locations map |
+### v1.0.0 Release Checklist
+- [x] Analytics dashboard complete
+- [x] Tier pricing working end-to-end
+- [x] Registration flow complete
+- [ ] Smoke test: register → approve → login → see tier price → download PDF
+- [ ] No console.error in browser on normal usage
+- [ ] Mobile layout tested at 375px
+- [ ] Remove debug console.log statements
+- [ ] Merge develop → main, tag v1.0.0
+- [ ] Verify live URL after deploy
 
 ---
 
@@ -250,7 +254,7 @@ Direct push to `main` is not allowed. All changes go through `develop` → PR.
 | v0.3.0 | Sprint 1-5 bug fixes complete |
 | v0.4.0 | Search Intelligence + category-specific specs |
 | v0.5.0 | Admin 13/14 complete, catalog ready, security hardening |
-| v1.0.0 | Target: all features, production launch |
+| v1.0.0 | Analytics dashboard, dealer tier pricing, registration flow — production launch |
 
 ## Commit Convention
 
