@@ -9,6 +9,7 @@ const Catalog   = lazy(() => import('./pages/Catalog'));
 const Product   = lazy(() => import('./pages/Product'));
 const Cart      = lazy(() => import('./pages/Cart'));
 const Login     = lazy(() => import('./pages/Login'));
+const Register  = lazy(() => import('./pages/Register'));
 const Profile   = lazy(() => import('./pages/Profile'));
 const Shops     = lazy(() => import('./pages/Shops'));
 const Admin     = lazy(() => import('./pages/Admin'));
@@ -43,6 +44,7 @@ export default function App() {
           <Route path="catalog/:slug" element={<Product />} />
           <Route path="shops"    element={<Shops />} />
           <Route path="login"    element={<Login />} />
+          <Route path="register" element={<Register />} />
           <Route path="cart"     element={<Cart />} />
           <Route path="profile"  element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="admin/*"  element={<ProtectedRoute requireAdmin><Admin /></ProtectedRoute>} />

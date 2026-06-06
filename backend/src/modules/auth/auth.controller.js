@@ -17,6 +17,15 @@ const loginSchema = z.object({
   password: z.string().min(1),
 });
 
+const dealerRegisterSchema = z.object({
+  businessName: z.string().min(2),
+  ownerName:    z.string().min(2),
+  email:        z.string().email(),
+  phone:        z.string().min(11).max(14),
+  address:      z.string().min(5),
+  password:     z.string().min(6),
+});
+
 // ── Helpers ────────────────────────────────────────────────────
 
 /**
@@ -86,6 +95,37 @@ exports.register = async (req, res) => {
   }
 };
 
+exports.dealerRegister = async (req, res) => {
+  try {
+    const parsed = dealerRegisterSchema.safeParse(req.body);
+    if (!parsed.success) return sendError(res, 400, 'Validation failed', parsed.error.flatten().fieldErrors);
+
+    const { businessName, ownerName, email, phone, address, password } = parsed.data;
+
+    const exists = await User.findOne({ phone, isDeleted: false });
+    if (exists) return sendError(res, 409, 'Phone number already registered.');
+
+    const hashed = await bcrypt.hash(password, 12);
+    const user = await User.create({
+      phone,
+      password: hashed,
+      role: 'dealer',
+      registrationStatus: 'pending',
+      isVerified: false,
+      'profile.name': ownerName,
+      'profile.shopName': businessName,
+      'profile.address': address,
+      'verificationDetails.appliedAt': new Date(),
+    });
+
+    sendSuccess(res, 201, 'Registration received. Your account is under review.', {
+      userId: user._id,
+    });
+  } catch (err) {
+    sendError(res, 500, err.message);
+  }
+};
+
 exports.login = async (req, res) => {
   try {
     const parsed = loginSchema.safeParse(req.body);
@@ -98,6 +138,15 @@ exports.login = async (req, res) => {
 
     const match = await bcrypt.compare(password, user.password);
     if (!match) return sendError(res, 401, 'Invalid phone or password.');
+
+    if (user.role === 'dealer') {
+      if (user.registrationStatus === 'pending') {
+        return sendError(res, 403, 'Your account is under review. Please wait for admin approval.');
+      }
+      if (user.registrationStatus === 'rejected') {
+        return sendError(res, 403, 'Your registration was not approved. Please contact Badol Tyre Ghar for assistance.');
+      }
+    }
 
     const accessToken = await issueTokens(res, user._id, req);
 
