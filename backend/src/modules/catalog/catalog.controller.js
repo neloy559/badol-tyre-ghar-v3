@@ -4,6 +4,7 @@ const Brand     = require('./models/Brand');
 const Campaign  = require('../marketing/campaign.model');
 const SearchLog = require('./models/SearchLog');
 const PricingService = require('../../utils/PricingService');
+const TierPricingService = require('../../utils/TierPricingService');
 const { sendSuccess, sendError } = require('../../utils/sendResponse');
 const { toEnglishDigits } = require('../../utils/searchHelper');
 
@@ -182,7 +183,11 @@ exports.getProducts = async (req, res) => {
 
     const activeCampaigns = await getActiveCampaigns();
 
-    const data = products.map((p) => {
+    const isDealer = req.user?.role === 'dealer';
+    const dealerTier = req.user?.tier || 'standard';
+    const discountMap = { standard: 0, silver: 5, gold: 10, platinum: 15 };
+
+    const data = await Promise.all(products.map(async (p) => {
       const campaign = matchActiveCampaign(p, activeCampaigns);
       const processedVariants = PricingService.processVariants(p.variants, { 
         role, 
@@ -190,12 +195,24 @@ exports.getProducts = async (req, res) => {
         campaign 
       });
 
+      let tierPrice;
+      if (isDealer) {
+        const publicPrice   = p.variants?.[0]?.pricing?.wholesale ?? 0;
+        const adjustedPrice = await TierPricingService.getDealerPrice(publicPrice, dealerTier);
+        tierPrice = {
+          tier:            dealerTier,
+          discountPercent: discountMap[dealerTier] ?? 0,
+          adjustedPrice,
+        };
+      }
+
       return {
         ...p,
         variants: processedVariants,
         campaign: campaign ? { name: campaign.name, badgeText: campaign.badgeText } : null,
+        ...(tierPrice ? { tierPrice } : {}),
       };
-    });
+    }));
 
     sendSuccess(res, 200, 'Products fetched.', { 
       total, 
@@ -237,10 +254,27 @@ exports.getProduct = async (req, res) => {
       campaign 
     });
 
+    // Compute tier price for dealers (Req 4.3)
+    let tierPrice;
+    if (req.user?.role === 'dealer') {
+      const publicPrice = product.variants?.[0]?.pricing?.wholesale ?? 0;
+      const dealerTier  = req.user.tier || 'standard';
+      const adjustedPrice = await TierPricingService.getDealerPrice(publicPrice, dealerTier);
+      // Get discountPercent from cache (getDealerPrice populates cache as side-effect)
+      // Re-read from cache or use the TierPricingRule directly via a 2nd lookup — use the simple approach:
+      const discountMap = { standard: 0, silver: 5, gold: 10, platinum: 15 };
+      tierPrice = {
+        tier:           dealerTier,
+        discountPercent: discountMap[dealerTier] ?? 0,
+        adjustedPrice,
+      };
+    }
+
     sendSuccess(res, 200, 'Product fetched.', {
       ...product,
       variants: processedVariants,
       campaign: campaign ? { name: campaign.name, badgeText: campaign.badgeText } : null,
+      ...(tierPrice ? { tierPrice } : {}),
     });
   } catch (err) {
     console.error('❌ Error in getProduct:', err);

@@ -1,0 +1,38 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+/* standard → grey */
+.badge[data-tier="standard"] {
+  background: #f3f4f6;
+  color: #4b5563;
+  border: 1px solid #d1d5db;
+}
+
+/* silver → cool-grey / slate */
+.badge[data-tier="silver"] {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #94a3b8;
+}
+
+/* gold → amber */
+.badge[data-tier="gold"] {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #f59e0b;
+}
+
+/* platinum → indigo/purple */
+.badge[data-tier="platinum"] {
+  background: #ede9fe;
+  color: #4c1d95;
+  border: 1px solid #8b5cf6;
+}

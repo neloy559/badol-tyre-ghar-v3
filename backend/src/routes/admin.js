@@ -23,10 +23,14 @@ router.get('/analytics/summary', analyticsAdmin.getSummary);
 // 2. Catalog Admin (CRUD, Bulk, Upload)
 router.use('/catalog', catalogAdminRoutes);
 
-// 2. Dealer Verification
-router.get('/dealers/pending',        userAdmin.getPendingDealers);
-router.patch('/dealers/:id/verify',   userAdmin.verifyDealer);
-router.patch('/dealers/:id/discount', userAdmin.setDealerDiscount);
+// 2. Dealer Verification & Registration
+router.get('/dealers/pending',              userAdmin.getPendingDealers);
+router.get('/dealers/registrations',        userAdmin.getRegistrations);
+router.patch('/dealers/:id/verify',         userAdmin.verifyDealer);
+router.patch('/dealers/:id/discount',       userAdmin.setDealerDiscount);
+router.patch('/dealers/:id/approve',        userAdmin.approveDealer);
+router.patch('/dealers/:id/reject',         userAdmin.rejectDealer);
+router.patch('/dealers/:id/tier',           userAdmin.setDealerTier);
 
 // 3. Inquiry CRM
 router.get('/inquiries',              inquiryAdmin.getInquiries);
