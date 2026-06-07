@@ -54,4 +54,10 @@ router.post('/pdf/mark-ready',       pdfAdmin.markReady);
 router.post('/pdf/mark-generating',  pdfAdmin.markGenerating);
 router.post('/pdf/mark-failed',      pdfAdmin.markFailed);
 
+// 7. Customer-to-Dealer Upgrade Requests
+const upgrade = require('../modules/users/upgrade.controller');
+router.get('/upgrade-requests',               upgrade.listUpgradeRequests);
+router.patch('/upgrade-requests/:id/approve', upgrade.approveUpgradeRequest);
+router.patch('/upgrade-requests/:id/reject',  upgrade.rejectUpgradeRequest);
+
 module.exports = router;

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ShieldCheck, XCircle, ExternalLink, Percent, Loader2, UserCheck } from 'lucide-react';
+import { ShieldCheck, XCircle, ExternalLink, Percent, Loader2, UserCheck, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import api from '../../services/api';
 
 const DealerQueue = () => {
@@ -10,6 +11,15 @@ const DealerQueue = () => {
   const { data: dealers, isLoading } = useQuery({
     queryKey: ['pending-dealers'],
     queryFn: async () => (await api.get('/admin/dealers/pending')).data.data,
+  });
+
+  // Count pending upgrade requests for the notice banner
+  const { data: upgradeCount } = useQuery({
+    queryKey: ['upgrade-requests-count'],
+    queryFn: () =>
+      api.get('/admin/upgrade-requests', { params: { status: 'pending', limit: 1 } })
+         .then(r => r.data.data?.total ?? 0),
+    staleTime: 30_000,
   });
 
   const verify = useMutation({
@@ -36,6 +46,36 @@ const DealerQueue = () => {
         <h2 className="admin-section-title">Dealer Verification Queue</h2>
         <span className="admin-badge">{dealers?.length || 0} Pending</span>
       </div>
+
+      {/* Upgrade request notice — shown when there are pending upgrade requests */}
+      {upgradeCount > 0 && (
+        <div style={{
+          background: '#fff7ed',
+          border: '1px solid #fb923c',
+          borderRadius: '8px',
+          padding: '10px 16px',
+          marginBottom: '16px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          fontSize: '0.875rem',
+          color: '#9a3412',
+        }}>
+          <span style={{ fontWeight: 600 }}>
+            {upgradeCount} pending upgrade request{upgradeCount !== 1 ? 's' : ''} from existing customers.
+          </span>
+          <Link
+            to="/admin/registrations"
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: '4px',
+              color: '#ea580c', fontWeight: 600, textDecoration: 'none',
+              marginLeft: 'auto', whiteSpace: 'nowrap',
+            }}
+          >
+            Review in Registrations <ArrowRight size={14} />
+          </Link>
+        </div>
+      )}
 
       {dealers?.length === 0 && (
         <div className="admin-empty-state">

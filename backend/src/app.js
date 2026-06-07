@@ -13,6 +13,8 @@ const app = express();
 // ── Security & Core Middleware ─────────────────────────────────
 const allowedOrigins = [
   'http://localhost:5173',
+  'http://localhost:5174',
+  'http://localhost:5175',
   'https://badol-tyre-ghar.vercel.app',
   process.env.FRONTEND_URL,
 ].filter(Boolean);
@@ -20,7 +22,8 @@ const allowedOrigins = [
 app.use(cors({
   origin: (origin, callback) => {
     const isVercel = origin && origin.endsWith('.vercel.app');
-    if (!origin || allowedOrigins.includes(origin) || isVercel) {
+    const isLocalhost = origin && origin.includes('localhost:');
+    if (!origin || allowedOrigins.includes(origin) || isVercel || (isLocalhost && process.env.NODE_ENV === 'development')) {
       callback(null, true);
     } else {
       callback(new Error(`CORS: Origin ${origin} not allowed`));

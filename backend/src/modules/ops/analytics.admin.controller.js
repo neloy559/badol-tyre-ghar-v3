@@ -38,7 +38,7 @@ exports.getSummary = async (req, res) => {
         { $match: { isDeleted: false } },
         { $group: { _id: '$brand', count: { $sum: 1 } } },
         { $lookup: { from: 'brands', localField: '_id', foreignField: '_id', as: 'brandDoc' } },
-        { $unwind: { path: '$brandDoc', preserveNullAndEmpty: true } },
+        { $unwind: { path: '$brandDoc', preserveNullAndEmptyArrays: true } },
         { $project: { brand: { $ifNull: ['$brandDoc.name', 'Unknown'] }, count: 1 } },
         { $sort: { count: -1 } },
       ]),

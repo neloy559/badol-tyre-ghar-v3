@@ -6,6 +6,7 @@ const authRoutes    = require('../modules/auth/auth.routes');
 const catalogRoutes = require('../modules/catalog/catalog.routes');
 const inquiryRoutes = require('../modules/inquiry/inquiry.routes');
 const adminRoutes   = require('../routes/admin');
+const userRoutes    = require('../routes/users');
 
 const brandingRoutes = require('../modules/ops/branding.routes');
 
@@ -15,6 +16,7 @@ router.use('/products', catalogRoutes);
 router.use('/catalog',  catalogRoutes);
 router.use('/cart',     inquiryRoutes);
 router.use('/admin',    adminRoutes);
+router.use('/users',    userRoutes);
 router.use('/branding', brandingRoutes);
 
 // Health Check

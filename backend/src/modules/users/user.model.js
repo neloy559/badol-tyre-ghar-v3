@@ -41,6 +41,23 @@ const UserSchema = new Schema({
     type:    String,
     default: null,
   },
+
+  // ── Dealer Upgrade Request fields ────────────────────────────
+  upgradeStatus: {
+    type:    String,
+    enum:    ['none', 'pending', 'approved', 'rejected'],
+    default: 'none',
+  },
+  upgradeRejectionReason: {
+    type:    String,
+    default: null,
+  },
+  upgradeDetails: {
+    businessName: { type: String },
+    ownerName:    { type: String },
+    address:      { type: String },
+    appliedAt:    { type: Date },
+  },
 }, { timestamps: true });
 
 module.exports = mongoose.models.User || mongoose.model('User', UserSchema);

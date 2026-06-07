@@ -1,30 +1,20 @@
-## What
-<!-- What does this PR do? 1-2 sentences. -->
+## Summary
+<!-- What does this PR do? -->
 
-## Why
-<!-- Why is this change needed? What problem does it solve? -->
+## Changes
+<!-- List key changes -->
 
-## How
-<!-- Brief technical approach. Key decisions made. -->
+## Testing Performed
+<!-- How did you test this? -->
 
-## Type of Change
-- [ ] `feat` — new feature
-- [ ] `fix` — bug fix
-- [ ] `refactor` — code restructure, no behavior change
-- [ ] `chore` — deps, config, tooling
-- [ ] `docs` — documentation only
-- [ ] `perf` — performance improvement
-- [ ] `style` — formatting only
+## Screenshots
+<!-- If UI change, add screenshots -->
 
 ## Checklist
-- [ ] Commit messages follow Conventional Commits format
-- [ ] No console.log left in code
-- [ ] No hardcoded secrets or API keys
-- [ ] Tested locally (dev server running)
-- [ ] Vercel preview build passes
-
-## Screenshots (if UI change)
-<!-- Add before/after screenshots here -->
-
-## Related Issues
-<!-- Closes #xxx -->
+- [ ] Tests pass (`npm test`)
+- [ ] No console.error in browser
+- [ ] No hardcoded values (use constants.js)
+- [ ] CSS Modules used (no global styles added)
+- [ ] No prohibited libraries added
+- [ ] Documentation updated if needed
+- [ ] Commit messages follow Conventional Commits

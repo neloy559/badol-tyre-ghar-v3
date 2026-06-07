@@ -29,7 +29,7 @@ import api from '../services/api';
 import './Admin.css';
 
 function usePendingCount() {
-  const { data } = useQuery({
+  const { data: dealerData } = useQuery({
     queryKey: ['registrations-pending-count'],
     queryFn: () =>
       api.get('/admin/dealers/registrations', { params: { status: 'pending', limit: 1 } })
@@ -37,7 +37,15 @@ function usePendingCount() {
     staleTime: 30_000,
     refetchInterval: 60_000,
   });
-  return data ?? 0;
+  const { data: upgradeData } = useQuery({
+    queryKey: ['upgrade-requests-count'],
+    queryFn: () =>
+      api.get('/admin/upgrade-requests', { params: { status: 'pending', limit: 1 } })
+         .then(r => r.data.data?.total ?? 0),
+    staleTime: 30_000,
+    refetchInterval: 60_000,
+  });
+  return (dealerData ?? 0) + (upgradeData ?? 0);
 }
 
 export default function Admin() {

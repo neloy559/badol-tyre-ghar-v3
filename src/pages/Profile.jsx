@@ -2,6 +2,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { LogOut, ShieldCheck, Clock, User } from 'lucide-react';
 import DealerTierBadge from '../components/ui/DealerTierBadge';
+import DealerUpgradeSection from './DealerUpgradeSection';
 import './Profile.css';
 
 const ROLE_LABEL = {
@@ -74,6 +75,9 @@ export default function Profile() {
             <button className="btn-apply-verify">Apply for Verification</button>
           </div>
         )}
+
+        {/* Dealer Upgrade Section — customers only */}
+        {user?.role === 'customer' && <DealerUpgradeSection />}
 
         {/* Admin Link */}
         {isAdmin && (
